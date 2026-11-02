@@ -8,8 +8,8 @@ const problems = [];
 const fileFor = (path) => join('dist', path === '/' ? 'index.html' : `${path.replace(/^\//, '')}.html`);
 const isPage = (path) => existsSync(fileFor(path)) && !(path in redirects);
 
-// 1. The URLs the old site had indexed.
-const indexed = Object.keys(JSON.parse(readFileSync('../paginas.json', 'utf8'))).map((u) => new URL(u, 'https://x').pathname.replace(/(.)\/$/, '$1'));
+// 1. The URLs the old site had indexed, kept in the repo so the check also runs on Vercel.
+const indexed = JSON.parse(readFileSync('scripts/indexed-urls.json', 'utf8'));
 for (const url of indexed) {
   const target = redirects[url];
   if (target ? !isPage(target) : !isPage(url)) problems.push(`indexed URL lost: ${url}`);
