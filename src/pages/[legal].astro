@@ -1,15 +1,22 @@
 ---
-// Privacy, terms and the service disclaimer, kept in the company's own wording.
-import { getCollection, render } from 'astro:content';
+// Privacy, terms and the service disclaimer, kept in the company's own wording. The Spanish copies are translations
+// and say so: the English text governs.
+import { getCollection, getEntry, render } from 'astro:content';
 import Base from '../layouts/Base.astro';
+import { langOf, showDate } from '../lib/i18n';
 
 export async function getStaticPaths() {
   const pages = await getCollection('legal');
-  return pages.map((entry) => ({ params: { legal: entry.id }, props: { entry } }));
+  return pages.map((entry) => ({ params: { legal: entry.id } }));
 }
 
-const { entry } = Astro.props;
+const lang = langOf(Astro.currentLocale);
+const entry = (await getEntry(lang === 'es' ? 'legalEs' : 'legal', Astro.params.legal!))!;
 const { Content } = await render(entry);
+const t = {
+  en: { updated: 'Last updated', governs: '' },
+  es: { updated: 'Última actualización', governs: 'Traducción de cortesía. Si hay alguna diferencia, prevalece la versión en inglés.' },
+}[lang];
 ---
 <Base title={`${entry.data.title} | Diamond Shine, San Antonio`} description={entry.data.description}>
   <article>
@@ -17,7 +24,8 @@ const { Content } = await render(entry);
       <div class="wrap narrow stack">
         <h1>{entry.data.title}</h1>
         {entry.data.lead && <p class="lead">{entry.data.lead}</p>}
-        {entry.data.updated && <p class="small muted">Last updated: {entry.data.updated}</p>}
+        {entry.data.updated && <p class="small muted">{t.updated}: {showDate(entry.data.updated, lang)}</p>}
+        {t.governs && <p class="small muted">{t.governs}</p>}
       </div>
     </header>
     <div class="section">

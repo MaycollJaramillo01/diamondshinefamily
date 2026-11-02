@@ -1,12 +1,15 @@
 ---
 // The company's real logo: its badge and its lettering, cut from the published file. The line beneath stays text, so the
-// working descriptor changes in one place (brand.ts).
+// working descriptor changes in one place (brand.ts, and its Spanish in lib/i18n.ts).
 import { brand } from '../data/brand';
+import { langOf, ui } from '../lib/i18n';
+
+const t = ui[langOf(Astro.currentLocale)];
 ---
-<a class="logo" href="/" aria-label={`${brand.name}, ${brand.descriptor}. Home page`}>
+<a class="logo" href="/" aria-label={`${brand.name}, ${t.descriptor}. ${t.homePage}`}>
   <img class="logo-badge" src="/brand/badge.webp" width="144" height="144" alt="" decoding="async" />
   <span class="logo-text">
     <img class="logo-word" src="/brand/wordmark.webp" width="408" height="51" alt="" decoding="async" />
-    <span class="logo-desc">{brand.descriptor}</span>
+    <span class="logo-desc">{t.descriptor}</span>
   </span>
 </a>

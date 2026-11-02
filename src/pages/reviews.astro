@@ -4,37 +4,53 @@ import PageHero from '../components/PageHero.astro';
 import Close from '../components/Close.astro';
 import { rich } from '../lib/rich';
 import { brand } from '../data/brand';
-import { reviews } from '../data/reviews';
+import { data, langOf } from '../lib/i18n';
 
-const groups = [
-  { id: 'homes', title: 'In the home' },
-  { id: 'moves', title: 'Around a move' },
-  { id: 'recurring', title: 'Over the years' },
-  { id: 'commercial', title: 'At work' },
-];
+const lang = langOf(Astro.currentLocale);
+const { reviews } = data[lang];
+const copy = {
+  en: {
+    title: 'Client Reviews of Home Cleaning in San Antonio | Diamond Shine',
+    description: 'Reviews of Diamond Shine in full, in clients’ own words, with the difference between a Facebook recommendation and a Google review kept visible. No ratings added.',
+    h1: 'San Antonio clients, in their own&nbsp;words.',
+    lead: 'Every review below is printed in full as it was published, with its source beside it. We add no ratings and change no words. [confirm:review-permission]',
+    groups: { homes: 'In the home', moves: 'Around a move', recurring: 'Over the years', commercial: 'At work' },
+    public: 'Read them where they were written',
+    facebook: 'Facebook recommendations',
+    google: 'Google reviews',
+    invite: `Been served by Diamond Shine? We would be glad to hear how it went, on either page or at [${brand.email}](mailto:${brand.email}).`,
+    closeTitle: 'Decide for yourself',
+    closeText: 'An evaluation shows you how we look at a home, and what we would and would not recommend.',
+  },
+  es: {
+    title: 'Reseñas de clientes sobre limpieza del hogar en San Antonio | Diamond Shine',
+    description: 'Las reseñas de Diamond Shine completas, en palabras de los clientes y traducidas del inglés, con la diferencia entre una recomendación en Facebook y una reseña en Google a la vista.',
+    h1: 'Clientes de San Antonio, en sus propias&nbsp;palabras.',
+    lead: 'Cada reseña aparece completa, traducida del inglés, con su fuente al lado. No añadimos calificaciones ni cambiamos lo que dicen; el texto original está en la versión en inglés de este sitio. [confirm:review-permission]',
+    groups: { homes: 'En el hogar', moves: 'En torno a una mudanza', recurring: 'A lo largo de los años', commercial: 'En el trabajo' },
+    public: 'Léalas donde se escribieron',
+    facebook: 'Recomendaciones en Facebook',
+    google: 'Reseñas en Google',
+    invite: `¿Ya le atendió Diamond Shine? Nos encantaría saber cómo le fue, en cualquiera de las dos páginas o en [${brand.email}](mailto:${brand.email}).`,
+    closeTitle: 'Juzgue por su cuenta',
+    closeText: 'Una evaluación le muestra cómo vemos una casa, y lo que le recomendaríamos y lo que no.',
+  },
+};
+const c = copy[lang];
+const capital = (s: string) => s[0].toUpperCase() + s.slice(1);
 ---
-<Base
-  title="Client Reviews of Home Cleaning in San Antonio | Diamond Shine"
-  description="Reviews of Diamond Shine in full, in clients’ own words, with the difference between a Facebook recommendation and a Google review kept visible. No ratings added."
-  service="not-sure"
->
-  <PageHero
-    h1="San Antonio clients, in their own&nbsp;words."
-    lead="Every review below is printed in full as it was published, with its source beside it. We add no ratings and change no words. [confirm:review-permission]"
-    main="hero-home.jpg"
-    service="not-sure"
-    review="evelyn"
-  />
+<Base title={c.title} description={c.description} service="not-sure">
+  <PageHero h1={c.h1} lead={c.lead} main="hero-home.jpg" service="not-sure" review="evelyn" />
 
-  {groups.map((g, i) => (
-    <section class:list={['section', { 'section--soft': i % 2 === 1 }]} aria-labelledby={`r-${g.id}`}>
+  {Object.entries(c.groups).map(([id, title], i) => (
+    <section class:list={['section', { 'section--soft': i % 2 === 1 }]} aria-labelledby={`r-${id}`}>
       <div class="wrap">
-        <div class="section-head"><h2 id={`r-${g.id}`}>{g.title}</h2></div>
+        <div class="section-head"><h2 id={`r-${id}`}>{title}</h2></div>
         <div class="review-grid">
-          {reviews.filter((r) => r.group === g.id).map((r) => (
+          {reviews.filter((r) => r.group === id).map((r) => (
             <figure class="quote">
               <blockquote>&ldquo;{r.text}&rdquo;</blockquote>
-              <figcaption><strong>{r.name}</strong><br />{r.source}. {r.context}.</figcaption>
+              <figcaption><strong>{r.name}</strong><br />{capital(r.source)}. {r.context}.</figcaption>
             </figure>
           ))}
         </div>
@@ -44,19 +60,14 @@ const groups = [
 
   <section class="section" aria-labelledby="r-public-title">
     <div class="wrap stack">
-      <h2 id="r-public-title">Read them where they were written</h2>
+      <h2 id="r-public-title">{c.public}</h2>
       <ul class="contact-lines">
-        <li><a href={brand.socials.facebook} rel="noopener">Facebook recommendations</a></li>
-        <li><a href={brand.socials.google} rel="noopener">Google reviews</a></li>
+        <li><a href={brand.socials.facebook} rel="noopener">{c.facebook}</a></li>
+        <li><a href={brand.socials.google} rel="noopener">{c.google}</a></li>
       </ul>
-      <p set:html={rich(`Been served by Diamond Shine? We would be glad to hear how it went, on either page or at [${brand.email}](mailto:${brand.email}).`)} />
+      <p set:html={rich(c.invite)} />
     </div>
   </section>
 
-  <Close
-    title="Decide for yourself"
-    text="An evaluation shows you how we look at a home, and what we would and would not recommend."
-    service="not-sure"
-    review="rob"
-  />
+  <Close title={c.closeTitle} text={c.closeText} service="not-sure" review="rob" />
 </Base>

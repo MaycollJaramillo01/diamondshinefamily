@@ -5,31 +5,71 @@ import Sections from '../../components/Sections.astro';
 import Frames from '../../components/Frames.astro';
 import Related from '../../components/Related.astro';
 import Close from '../../components/Close.astro';
-import { illustrativeNote } from '../../data/pictures';
-import { stories } from '../../data/stories';
-import type { Story } from '../../data/stories';
+import { stories as everyStory } from '../../data/stories';
+import { data, langOf } from '../../lib/i18n';
 import type { Section } from '../../data/page-types';
 
 export function getStaticPaths() {
-  return stories.map((story) => ({ params: { story: story.slug }, props: { story } }));
+  return everyStory.map((story) => ({ params: { story: story.slug } }));
 }
 
-const { story } = Astro.props as { story: Story };
+const lang = langOf(Astro.currentLocale);
+const { stories, illustrativeNote } = data[lang];
+const story = stories.find((s) => s.slug === Astro.params.story)!;
+const c = {
+  en: {
+    situation: 'The situation and the goal',
+    found: 'What we found, what was approved',
+    foundCol: 'What we found',
+    scope: 'The approved scope',
+    work: 'The work',
+    order: ['First', 'Then', 'Next', 'After that', 'Finally'],
+    result: 'Result and handoff',
+    limits: 'This case describes only the cleaning, restoration, preservation and presentation services performed by Diamond Shine. It is not a home inspection, appraisal, engineering opinion or real-estate valuation, and it makes no claim about sale price, timing or inspection outcomes.',
+    after: 'Documents and continued care',
+    documents: 'Documentation',
+    aboutDocs: '[About property documentation](/documentation)',
+    care: 'Care recommendations',
+    ongoing: '[Ongoing care](/home-preservation)',
+    crumb: 'Our work',
+    closeTitle: 'Prepare your next&nbsp;chapter',
+    closeText: 'Request an evaluation and receive an honest recommendation for your home.',
+  },
+  es: {
+    situation: 'La situación y el objetivo',
+    found: 'Lo que encontramos, lo que se aprobó',
+    foundCol: 'Lo que encontramos',
+    scope: 'El alcance aprobado',
+    work: 'El trabajo',
+    order: ['Primero', 'Después', 'A continuación', 'Luego', 'Por último'],
+    result: 'Resultado y entrega',
+    limits: 'Este caso describe solo los servicios de limpieza, restauración, preservación y presentación que realizó Diamond Shine. No es una inspección de vivienda, un avalúo, una opinión de ingeniería ni una valuación inmobiliaria, y no afirma nada sobre el precio de venta, los plazos ni los resultados de una inspección.',
+    after: 'Documentos y cuidado continuo',
+    documents: 'Documentación',
+    aboutDocs: '[Sobre la documentación de la propiedad](/documentation)',
+    care: 'Recomendaciones de cuidado',
+    ongoing: '[Cuidado continuo](/home-preservation)',
+    crumb: 'Nuestro trabajo',
+    closeTitle: 'Prepare su próximo&nbsp;capítulo',
+    closeText: 'Solicite una evaluación y reciba una recomendación honesta para su casa.',
+  },
+}[lang];
 
 // The six parts every case follows: situation, goal, findings, scope, work, result.
+const [first, then, next, afterThat, last] = c.order;
 const before: Section[] = [
-  { kind: 'plate', title: 'The situation and the goal', text: story.situation, note: story.goal, pic: story.scopePic, flip: true },
-  { kind: 'columns', title: 'What we found, what was approved', text: story.meta.join(', ') + '.', columns: [{ name: 'What we found', items: story.found }, { name: 'The approved scope', items: story.scope }] },
-  { kind: 'steps', title: 'The work', steps: story.work.map((w, i) => ({ name: i === 0 ? 'First' : i === story.work.length - 1 ? 'Finally' : ['Then', 'Next', 'After that'][i - 1], text: w })) },
-  { kind: 'limits', title: 'Result and handoff', items: story.result, note: 'This case describes only the cleaning, restoration, preservation and presentation services performed by Diamond Shine. It is not a home inspection, appraisal, engineering opinion or real-estate valuation, and it makes no claim about sale price, timing or inspection outcomes.' },
+  { kind: 'plate', title: c.situation, text: story.situation, note: story.goal, pic: story.scopePic, flip: true },
+  { kind: 'columns', title: c.found, text: story.meta.join(', ') + '.', columns: [{ name: c.foundCol, items: story.found }, { name: c.scope, items: story.scope }] },
+  { kind: 'steps', title: c.work, steps: story.work.map((w, i) => ({ name: i === 0 ? first : i === story.work.length - 1 ? last : [then, next, afterThat][i - 1], text: w })) },
+  { kind: 'limits', title: c.result, items: story.result, note: c.limits },
 ];
 const after: Section[] = [
   {
     kind: 'columns',
-    title: 'Documents and continued care',
+    title: c.after,
     columns: [
-      { name: 'Documentation', items: [...story.documents, '[About property documentation](/documentation)'] },
-      { name: 'Care recommendations', items: [...story.care, '[Ongoing care](/home-preservation)'] },
+      { name: c.documents, items: [...story.documents, c.aboutDocs] },
+      { name: c.care, items: [...story.care, c.ongoing] },
     ],
   },
 ];
@@ -40,7 +80,7 @@ const after: Section[] = [
     lead={story.lead}
     main={story.pic}
     caption={illustrativeNote}
-    crumb={[{ label: 'Our work', href: '/transformation-stories' }]}
+    crumb={[{ label: c.crumb, href: '/transformation-stories' }]}
     service={story.service}
     review="crystal"
   />
@@ -48,10 +88,5 @@ const after: Section[] = [
   <Frames groups={story.frames} />
   <Sections sections={after} startSoft />
   <Related items={story.related} soft={false} />
-  <Close
-    title="Prepare your next&nbsp;chapter"
-    text="Request an evaluation and receive an honest recommendation for your home."
-    picture="limestone-entrance.webp"
-    service={story.service}
-  />
+  <Close title={c.closeTitle} text={c.closeText} picture="limestone-entrance.webp" service={story.service} />
 </Base>

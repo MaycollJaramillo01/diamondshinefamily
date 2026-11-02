@@ -7,89 +7,155 @@ import Faq from '../components/Faq.astro';
 import Close from '../components/Close.astro';
 import { rich } from '../lib/rich';
 import { brand } from '../data/brand';
+import { langOf, ui } from '../lib/i18n';
 import type { Section } from '../data/page-types';
 
-const sections: Section[] = [
-  {
-    kind: 'steps',
-    title: 'How the evaluation works',
-    text: 'A walkthrough, not an inspection or a certification. We look at the home the way you actually experience it, and follow up with a prioritized recommendation in plain English.',
-    steps: [
-      { name: 'You share', text: 'A few minutes of context about the property, your goals and the areas you care about most.' },
-      { name: 'We review', text: 'Our team reviews what you have shared and, where helpful, walks the home with you.' },
-      { name: 'You receive', text: 'A prioritized plan: what we would recommend, in what order, and why. Each area is marked Maintain, Restore or Priority.' },
+const lang = langOf(Astro.currentLocale);
+const t = ui[lang];
+const copy = {
+  en: {
+    title: 'Request a Home Evaluation in San Antonio, TX | Diamond Shine',
+    description: 'A walkthrough of your San Antonio home, followed by a prioritized plan in plain English: each area marked Maintain, Restore or Priority. Not an inspection, and no obligation.',
+    h1: 'Request a Home Evaluation.',
+    lead: 'A complimentary walkthrough of your San Antonio home. [confirm:complimentary] We review the property, listen to what matters most to you, then recommend what to do first: cleaning, restoration, market-ready preparation or recurring care.',
+    free: 'Requesting one does not commit you to a service, reserve a date or take a payment.',
+    commercial: 'Managing a business, office or facility? [Start with commercial care](/commercial).',
+    talk: 'Prefer to talk? Call or text',
+    faqTitle: 'What people ask first',
+    closeTitle: 'Ready when you are',
+    closeText: 'The form takes about a minute. If you would rather talk, a member of our family answers the phone.',
+    back: 'Back to the form',
+    sections: [
+      {
+        kind: 'steps',
+        title: 'How the evaluation works',
+        text: 'A walkthrough, not an inspection or a certification. We look at the home the way you actually experience it, and follow up with a prioritized recommendation in plain English.',
+        steps: [
+          { name: 'You share', text: 'A few minutes of context about the property, your goals and the areas you care about most.' },
+          { name: 'We review', text: 'Our team reviews what you have shared and, where helpful, walks the home with you.' },
+          { name: 'You receive', text: 'A prioritized plan: what we would recommend, in what order, and why. Each area is marked Maintain, Restore or Priority.' },
+        ],
+      },
+      {
+        kind: 'plate',
+        title: 'Begin with what your home needs&nbsp;most',
+        text: 'The evaluation helps us recommend a useful starting point: a deep reset, carpet or tile restoration, market-ready preparation, or the full project you have in mind. We explain the recommended work, what is included, any exclusions and your personal investment before you decide.',
+        note: 'Every service begins with a signed agreement covering scope, price, payment and responsibilities. Continuing care is optional, and separately quoted.',
+        pic: 'stone-kitchen.jpg',
+      },
+      {
+        kind: 'list',
+        title: 'What we look at',
+        text: 'The major living areas and surfaces of the home.',
+        pic: 'empty-home.jpg',
+        items: ['Kitchen', 'Bathrooms', 'Living areas', 'Bedrooms', 'Carpet', 'Tile and grout', 'Walls', 'Glass', 'Exterior concrete'],
+      },
+      {
+        kind: 'limits',
+        id: 'limits',
+        title: 'What we don’t do',
+        text: 'We perform cleaning, detailing, surface restoration and property presentation. We do not perform plumbing, mold remediation, pest control, electrical, HVAC, structural repair, or flooring and countertop replacement, and we do not issue inspections or certifications. When we see one of those concerns, we tell you and refer you to the appropriate licensed trade.',
+      },
+    ] as Section[],
+    faq: [
+      { q: 'What is the Home Evaluation?', a: 'A walkthrough of your home in San Antonio. We review the major living areas and surfaces, then follow up with a prioritized, plain-English recommendation before any service is scheduled.' },
+      { q: 'Does the evaluation cost anything?', a: 'It is published as complimentary, and requesting one does not commit you to a service. [confirm:complimentary] It is a consultation, not an inspection or a certification.' },
+      { q: 'What areas of San Antonio do you serve?', a: 'San Antonio and surrounding communities, including Alamo Heights, Stone Oak, Boerne, Helotes, Schertz, Converse, New Braunfels and nearby areas. [confirm:communities] Coverage depends on the property location and requested service.' },
+      { q: 'What do I receive afterward?', a: 'A clear recommendation for your home: what we would suggest addressing, in what order and why, written in plain English, with no obligation to proceed.' },
+      { q: 'What happens if something is outside your scope?', a: 'We tell you, and we point you toward the appropriate licensed trade.' },
+      { q: 'How does the evaluation lead to a plan?', a: 'Your recommendation is built around the condition of the property and what matters most to you, then paired with the appropriate service or recurring care plan.' },
+      { q: 'Can I use it to prepare a home for sale?', a: 'Yes. Sellers, Realtors and property managers often start here. If the goal is a listing, showing or turnover, the evaluation routes into [market-ready preparation](/market-ready-solutions).' },
+      { q: 'Do you serve military families relocating to or from JBSA?', a: 'Yes. We work with families moving through Joint Base San Antonio on move-in and move-out property care. We are an independent business, not affiliated with or endorsed by the military. [Military PCS home care](/military-pcs-concierge)' },
+      { q: 'Do you evaluate move-in and move-out properties?', a: 'Yes. Vacant, pre-move-in and post-move-out properties are common. Empty homes are often faster to assess because every surface is visible.' },
     ],
   },
-  {
-    kind: 'plate',
-    title: 'Begin with what your home needs&nbsp;most',
-    text: 'The evaluation helps us recommend a useful starting point: a deep reset, carpet or tile restoration, market-ready preparation, or the full project you have in mind. We explain the recommended work, what is included, any exclusions and your personal investment before you decide.',
-    note: 'Every service begins with a signed agreement covering scope, price, payment and responsibilities. Continuing care is optional, and separately quoted.',
-    pic: 'stone-kitchen.jpg',
+  es: {
+    title: 'Solicite una Evaluación del Hogar en San Antonio, TX | Diamond Shine',
+    description: 'Un recorrido por su casa en San Antonio, seguido de un plan por prioridades en palabras claras: cada área marcada como Mantener, Restaurar o Prioridad. No es una inspección, y sin compromiso.',
+    h1: 'Solicite una Evaluación del Hogar.',
+    lead: 'Un recorrido gratuito por su casa en San Antonio. [confirm:complimentary] Revisamos la propiedad, escuchamos lo que más le importa y le recomendamos qué hacer primero: limpieza, restauración, preparación para la venta o cuidado recurrente.',
+    free: 'Solicitarla no le compromete a ningún servicio, no reserva una fecha ni cobra ningún pago.',
+    commercial: '¿Administra un negocio, una oficina o unas instalaciones? [Empiece por el cuidado comercial](/commercial).',
+    talk: '¿Prefiere hablar? Llame o escriba al',
+    faqTitle: 'Lo que la gente pregunta primero',
+    closeTitle: 'Cuando usted quiera',
+    closeText: 'El formulario toma alrededor de un minuto. Si prefiere hablar, un miembro de nuestra familia contesta el teléfono.',
+    back: 'Volver al formulario',
+    sections: [
+      {
+        kind: 'steps',
+        title: 'Cómo funciona la evaluación',
+        text: 'Un recorrido, no una inspección ni una certificación. Vemos la casa como usted la vive en realidad, y después le damos una recomendación por prioridades, en palabras claras.',
+        steps: [
+          { name: 'Usted comparte', text: 'Unos minutos de contexto sobre la propiedad, sus objetivos y las áreas que más le importan.' },
+          { name: 'Nosotros revisamos', text: 'Nuestro equipo revisa lo que nos compartió y, cuando ayuda, recorre la casa con usted.' },
+          { name: 'Usted recibe', text: 'Un plan por prioridades: lo que le recomendaríamos, en qué orden y por qué. Cada área queda marcada como Mantener, Restaurar o Prioridad.' },
+        ],
+      },
+      {
+        kind: 'plate',
+        title: 'Empiece por lo que su casa más&nbsp;necesita',
+        text: 'La evaluación nos ayuda a recomendarle un punto de partida útil: una renovación profunda, la restauración de alfombras o azulejos, la preparación para la venta o el proyecto completo que tiene en mente. Le explicamos el trabajo recomendado, lo que incluye, las exclusiones y su inversión antes de que decida.',
+        note: 'Cada servicio empieza con un acuerdo firmado que cubre el alcance, el precio, el pago y las responsabilidades. El cuidado continuo es opcional y se cotiza por separado.',
+        pic: 'stone-kitchen.jpg',
+      },
+      {
+        kind: 'list',
+        title: 'Lo que revisamos',
+        text: 'Las principales áreas de estar y superficies de la casa.',
+        pic: 'empty-home.jpg',
+        items: ['Cocina', 'Baños', 'Áreas de estar', 'Recámaras', 'Alfombras', 'Azulejos y juntas', 'Paredes', 'Vidrio', 'Concreto exterior'],
+      },
+      {
+        kind: 'limits',
+        id: 'limits',
+        title: 'Lo que no hacemos',
+        text: 'Hacemos limpieza, detallado, restauración de superficies y presentación de propiedades. No hacemos plomería, remediación de moho, control de plagas, trabajos eléctricos, climatización (HVAC), reparaciones estructurales ni reemplazo de pisos o encimeras, y no emitimos inspecciones ni certificaciones. Cuando vemos alguno de esos problemas, se lo decimos y le recomendamos al profesional con licencia adecuado.',
+      },
+    ] as Section[],
+    faq: [
+      { q: '¿Qué es la Evaluación del Hogar?', a: 'Un recorrido por su casa en San Antonio. Revisamos las principales áreas de estar y superficies, y después le damos una recomendación por prioridades, en palabras claras, antes de programar cualquier servicio.' },
+      { q: '¿La evaluación tiene algún costo?', a: 'Se publica como gratuita, y solicitarla no le compromete a ningún servicio. [confirm:complimentary] Es una consulta, no una inspección ni una certificación.' },
+      { q: '¿Qué zonas de San Antonio atienden?', a: 'San Antonio y las comunidades cercanas, entre ellas Alamo Heights, Stone Oak, Boerne, Helotes, Schertz, Converse, New Braunfels y zonas aledañas. [confirm:communities] La cobertura depende de la ubicación de la propiedad y del servicio solicitado.' },
+      { q: '¿Qué recibo después?', a: 'Una recomendación clara para su casa: lo que le sugeriríamos atender, en qué orden y por qué, por escrito y en palabras claras, sin obligación de continuar.' },
+      { q: '¿Qué pasa si algo queda fuera de sus servicios?', a: 'Se lo decimos y le orientamos hacia el profesional con licencia adecuado.' },
+      { q: '¿Cómo se convierte la evaluación en un plan?', a: 'Su recomendación se construye en torno al estado de la propiedad y a lo que más le importa, y después se combina con el servicio o el plan de cuidado recurrente adecuado.' },
+      { q: '¿Puedo usarla para preparar una casa para la venta?', a: 'Sí. Vendedores, agentes inmobiliarios y administradores de propiedades suelen empezar aquí. Si el objetivo es un listado, una visita o un cambio de inquilinos, la evaluación lleva a la [preparación para la venta](/market-ready-solutions).' },
+      { q: '¿Atienden a familias militares que se mudan a JBSA o desde allí?', a: 'Sí. Trabajamos con familias que se mudan a través de Joint Base San Antonio en el cuidado de la propiedad a la entrada y a la salida. Somos una empresa independiente, sin afiliación ni respaldo de las fuerzas armadas. [Cuidado del hogar en mudanzas militares PCS](/military-pcs-concierge)' },
+      { q: '¿Evalúan propiedades para mudanzas de entrada y salida?', a: 'Sí. Las propiedades vacías, antes de la entrada o después de la salida, son comunes. Las casas vacías suelen evaluarse más rápido porque todas las superficies están a la vista.' },
+    ],
   },
-  {
-    kind: 'list',
-    title: 'What we look at',
-    text: 'The major living areas and surfaces of the home.',
-    pic: 'empty-home.jpg',
-    items: ['Kitchen', 'Bathrooms', 'Living areas', 'Bedrooms', 'Carpet', 'Tile and grout', 'Walls', 'Glass', 'Exterior concrete'],
-  },
-  {
-    kind: 'limits',
-    id: 'limits',
-    title: 'What we don’t do',
-    text: 'We perform cleaning, detailing, surface restoration and property presentation. We do not perform plumbing, mold remediation, pest control, electrical, HVAC, structural repair, or flooring and countertop replacement, and we do not issue inspections or certifications. When we see one of those concerns, we tell you and refer you to the appropriate licensed trade.',
-  },
-];
-
-const faq = [
-  { q: 'What is the Home Evaluation?', a: 'A walkthrough of your home in San Antonio. We review the major living areas and surfaces, then follow up with a prioritized, plain-English recommendation before any service is scheduled.' },
-  { q: 'Does the evaluation cost anything?', a: 'It is published as complimentary, and requesting one does not commit you to a service. [confirm:complimentary] It is a consultation, not an inspection or a certification.' },
-  { q: 'What areas of San Antonio do you serve?', a: 'San Antonio and surrounding communities, including Alamo Heights, Stone Oak, Boerne, Helotes, Schertz, Converse, New Braunfels and nearby areas. [confirm:communities] Coverage depends on the property location and requested service.' },
-  { q: 'What do I receive afterward?', a: 'A clear recommendation for your home: what we would suggest addressing, in what order and why, written in plain English, with no obligation to proceed.' },
-  { q: 'What happens if something is outside your scope?', a: 'We tell you, and we point you toward the appropriate licensed trade.' },
-  { q: 'How does the evaluation lead to a plan?', a: 'Your recommendation is built around the condition of the property and what matters most to you, then paired with the appropriate service or recurring care plan.' },
-  { q: 'Can I use it to prepare a home for sale?', a: 'Yes. Sellers, Realtors and property managers often start here. If the goal is a listing, showing or turnover, the evaluation routes into [market-ready preparation](/market-ready-solutions).' },
-  { q: 'Do you serve military families relocating to or from JBSA?', a: 'Yes. We work with families moving through Joint Base San Antonio on move-in and move-out property care. We are an independent business, not affiliated with or endorsed by the military. [Military PCS home care](/military-pcs-concierge)' },
-  { q: 'Do you evaluate move-in and move-out properties?', a: 'Yes. Vacant, pre-move-in and post-move-out properties are common. Empty homes are often faster to assess because every surface is visible.' },
-];
+};
+const c = copy[lang];
 ---
-<Base
-  title="Request a Home Evaluation in San Antonio, TX | Diamond Shine"
-  description="A walkthrough of your San Antonio home, followed by a prioritized plan in plain English: each area marked Maintain, Restore or Priority. Not an inspection, and no obligation."
-  ctaHref="#evaluation-form"
->
+<Base title={c.title} description={c.description} ctaHref="#evaluation-form">
   <section class="page-hero">
     <div class="wrap he">
       <div class="he-intro stack">
-        <h1>Request a Home Evaluation.</h1>
-        <p class="lead" set:html={rich('A complimentary walkthrough of your San Antonio home. [confirm:complimentary] We review the property, listen to what matters most to you, then recommend what to do first: cleaning, restoration, market-ready preparation or recurring care.')} />
-        <p>Requesting one does not commit you to a service, reserve a date or take a payment.</p>
+        <h1>{c.h1}</h1>
+        <p class="lead" set:html={rich(c.lead)} />
+        <p>{c.free}</p>
       </div>
       <div class="he-form">
         <div class="form-card"><EvaluationForm /></div>
-        <p class="small he-commercial">Managing a business, office or facility? <a href="/commercial">Start with commercial care</a>.</p>
+        <p class="small he-commercial" set:html={rich(c.commercial)} />
       </div>
       <div class="he-proof stack">
         <ProofLine review="serena" />
-        <p class="creds" set:html={rich('Insured [confirm:insured] Bonded [confirm:bonded] Background-checked team [confirm:background]')} />
+        <p class="creds" set:html={rich(t.creds)} />
         <ul class="contact-lines">
-          <li><a href={brand.phoneHref}>Prefer to talk? Call or text {brand.phone}</a></li>
+          <li><a href={brand.phoneHref}>{c.talk} {brand.phone}</a></li>
           <li><a href={`mailto:${brand.email}`}>{brand.email}</a></li>
-          <li>{brand.hours.text}</li>
+          <li>{t.hours.text}</li>
           <li class="muted" data-office-status></li>
         </ul>
       </div>
     </div>
   </section>
 
-  <Sections sections={sections} />
-  <Faq items={faq} title="What people ask first" />
-  <Close
-    title="Ready when you are"
-    text="The form takes about a minute. If you would rather talk, a member of our family answers the phone."
-    action={{ label: 'Back to the form', href: '#evaluation-form' }}
-  />
+  <Sections sections={c.sections} />
+  <Faq items={c.faq} title={c.faqTitle} />
+  <Close title={c.closeTitle} text={c.closeText} action={{ label: c.back, href: '#evaluation-form' }} />
 </Base>
 
 <style>

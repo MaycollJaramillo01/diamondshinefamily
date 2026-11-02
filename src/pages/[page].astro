@@ -8,14 +8,15 @@ import Related from '../components/Related.astro';
 import Close from '../components/Close.astro';
 import { services } from '../data/services';
 import { secondary } from '../data/secondary';
-import type { Page } from '../data/page-types';
+import { data, langOf, pathIn } from '../lib/i18n';
 
 export function getStaticPaths() {
-  return [...services, ...secondary].map((page) => ({ params: { page: page.slug }, props: { page } }));
+  return [...services, ...secondary].map((page) => ({ params: { page: page.slug } }));
 }
 
-const { page } = Astro.props as { page: Page };
-const url = new URL(`/${page.slug}`, Astro.site).href;
+const lang = langOf(Astro.currentLocale);
+const page = data[lang].pages.find((p) => p.slug === Astro.params.page)!;
+const url = new URL(pathIn(`/${page.slug}`, lang), Astro.site).href;
 const schema = page.serviceName
   ? [
       {

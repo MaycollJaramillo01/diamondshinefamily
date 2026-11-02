@@ -2,8 +2,11 @@
 // The close of every page: the back of the company's card, cut with the diamond's facets, on the badge navy. Everything on the centre line.
 import Facets from './Facets.astro';
 import { brand } from '../data/brand';
-import { footerMain, footerMore, footerLegal, serviceGroups } from '../data/nav';
+import { data, langOf, ui } from '../lib/i18n';
 
+const lang = langOf(Astro.currentLocale);
+const t = ui[lang];
+const { footerMain, footerMore, footerLegal, serviceGroups } = data[lang];
 const year = new Date().getFullYear();
 const explore = [
   ...serviceGroups.map((g) => ({ label: g.name, href: g.href })),
@@ -15,22 +18,22 @@ const explore = [
   <div class="wrap">
     <div class="card-back">
       <Facets />
-      <h2 class="back-sign">With care, the Leal family</h2>
-      <p class="back-message">Family-owned in {brand.city}, Texas, since {brand.founded}. We answer {brand.hours.short}<br />{brand.hours.closed}</p>
-      <p class="back-lines"><a href={brand.phoneHref}>Call or text {brand.phone}</a><a href={`mailto:${brand.email}`}>{brand.email}</a></p>
+      <h2 class="back-sign">{t.footer.sign}</h2>
+      <p class="back-message">{t.footer.message}<br />{t.hours.closed}</p>
+      <p class="back-lines"><a href={brand.phoneHref}>{t.callOrText} {brand.phone}</a><a href={`mailto:${brand.email}`}>{brand.email}</a></p>
       <p class="back-social">
-        <a href={brand.socials.google} rel="noopener">Google reviews</a>
+        <a href={brand.socials.google} rel="noopener">{t.footer.google}</a>
         <a href={brand.socials.facebook} rel="noopener">Facebook</a>
         <a href={brand.socials.instagram} rel="noopener">Instagram</a>
       </p>
-      <nav class="back-explore" aria-label="Everything on this site">
+      <nav class="back-explore" aria-label={t.footer.explore}>
         <ul>
           {explore.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
         </ul>
       </nav>
       <div class="back-imprint">
         <p>&copy; {year} {brand.legalEntity}. {footerLegal.map((l, i) => <>{i > 0 && ' · '}<a href={l.href}>{l.label}</a></>)}</p>
-        <p>Photographs on this site are illustrative unless a page says otherwise. They are not client homes or results.</p>
+        <p>{t.footer.photos}</p>
       </div>
     </div>
   </div>

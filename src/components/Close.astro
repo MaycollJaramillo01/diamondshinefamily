@@ -6,6 +6,7 @@ import ProofLine from './ProofLine.astro';
 import { pic } from '../data/pictures';
 import { rich } from '../lib/rich';
 import { brand } from '../data/brand';
+import { langOf, ui } from '../lib/i18n';
 
 interface Props {
   title: string;
@@ -16,6 +17,7 @@ interface Props {
   action?: { label: string; href: string };
 }
 const { title, text, picture = 'gloved-hand-stone.jpg', service, review = 'rob', action } = Astro.props;
+const t = ui[langOf(Astro.currentLocale)];
 ---
 <section class="section on-navy">
   <div class="wrap split">
@@ -28,10 +30,10 @@ const { title, text, picture = 'gloved-hand-stone.jpg', service, review = 'rob',
         <>
           <div class="actions">
             <Cta service={service} />
-            <a class="btn btn--line" href={brand.phoneHref}>Call {brand.phone}</a>
+            <a class="btn btn--line" href={brand.phoneHref}>{t.call} {brand.phone}</a>
           </div>
           <ProofLine review={review} />
-          <p class="creds" set:html={rich('Insured [confirm:insured] Bonded [confirm:bonded] Background-checked team [confirm:background]')} />
+          <p class="creds" set:html={rich(t.creds)} />
         </>
       )}
       <p class="small"><a href={`mailto:${brand.email}`}>{brand.email}</a></p>

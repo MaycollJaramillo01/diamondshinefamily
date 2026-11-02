@@ -5,111 +5,210 @@ import Photo from '../components/Photo.astro';
 import Sections from '../components/Sections.astro';
 import Close from '../components/Close.astro';
 import { rich } from '../lib/rich';
-import { people } from '../data/people';
+import { data, langOf } from '../lib/i18n';
 import type { Section } from '../data/page-types';
 
-const bios: Record<string, string> = {
-  'lilian-leal': 'Lilian founded Diamond Shine in San Antonio in 2017 and remains the heart of its service culture. She leads by example, teaching the care, discretion and consistency behind the White Glove Standard.',
-  'sergio-leal': 'Sergio brings practical judgment to operations, craftsmanship, sales and the client journey, connecting home services around a trusted relationship.',
-  'emilio-leal': 'Emilio leads Diamond Shine with a focus on customer experience, satisfaction and consistent service standards, and on a more coordinated welcome for families moving to San Antonio.',
+const lang = langOf(Astro.currentLocale);
+const { people } = data[lang];
+
+const copy: Record<'en' | 'es', { page: Record<string, string>; bios: Record<string, string>; story: Section[]; standard: Section[] }> = {
+  en: {
+    page: {
+      title: 'About Diamond Shine, a Family-Owned San Antonio Home Care Company',
+      description: 'Diamond Shine is a family-owned home preservation and property care company, founded in San Antonio in 2017 on stewardship, trust and attention to detail. Meet the Leal family.',
+      h1: 'A family-owned standard, since&nbsp;2017.',
+      lead: 'Diamond Shine is a family-owned home preservation and property care company, founded in San Antonio in 2017 on stewardship, trust and attention to the details most people overlook.',
+      family: 'Meet the Leal family',
+      familyText: 'The same family you speak with is the family accountable for the work. Portraits as published today. [confirm:portraits]',
+      profile: 'Read the full profile',
+      closeTitle: 'A space worthy of your&nbsp;story',
+      closeText: 'Share your home and preferred timing. We will confirm the scope, pricing and availability with you before anything is reserved.',
+    },
+    bios: {
+      'lilian-leal': 'Lilian founded Diamond Shine in San Antonio in 2017 and remains the heart of its service culture. She leads by example, teaching the care, discretion and consistency behind the White Glove Standard.',
+      'sergio-leal': 'Sergio brings practical judgment to operations, craftsmanship, sales and the client journey, connecting home services around a trusted relationship.',
+      'emilio-leal': 'Emilio leads Diamond Shine with a focus on customer experience, satisfaction and consistent service standards, and on a more coordinated welcome for families moving to San Antonio.',
+    },
+    story: [
+      {
+        kind: 'plate',
+        title: 'Built on trust, defined by detail',
+        text: 'What began in 2017 as a family commitment to honest, exceptional service has grown beyond traditional cleaning into restoration, preservation, recurring care and property presentation. We believe a well-cared-for home deserves continuity, accountability and attention to the details that shape how it feels.',
+        note: 'We serve homeowners, growing families, military families navigating PCS moves, real estate professionals preparing listings, and business owners who understand what a well-kept space says.',
+        pic: 'preservation.jpg',
+      },
+      {
+        kind: 'steps',
+        title: 'Where we began, where we’re going',
+        text: 'The honest version: a family business that kept listening to what homes actually needed.',
+        steps: [
+          { name: 'Where we began', text: 'In 2017, a San Antonio family decided to build a company around honest work and real attention to detail, starting with cleaning homes the way we would want our own cared for.' },
+          { name: 'What we learned', text: 'Years inside real homes revealed something: families did not need more isolated appointments. They needed someone paying attention to how the home was aging.' },
+          { name: 'What we became', text: 'Home preservation. Restoration before replacement. Recurring care, hospitality-inspired handoffs, market-ready presentation and stewardship for private residences.' },
+          { name: 'Where we’re going', text: 'A San Antonio institution for how exceptional homes are cared for: still family-owned, still accountable by name, with a growing team of skilled specialists.' },
+        ],
+      },
+    ],
+    standard: [
+      {
+        kind: 'rows',
+        title: 'Six commitments, in every home',
+        pic: 'hero-home.jpg',
+        items: [
+          { name: 'Discretion', text: 'A quiet, respectful presence in every home. We honor your family’s privacy, schedule and space.' },
+          { name: 'Precision', text: 'Corners, edges, seams and finishes are treated as the true measure of our work.' },
+          { name: 'Consistency', text: 'The same standard from the first visit to the hundredth, with no drop-off and no shortcuts.' },
+          { name: 'Craftsmanship', text: 'Restoration, preservation and finish work delivered with tradesman-level care.' },
+          { name: 'Accountability', text: 'Family-owned since 2017. If it isn’t right, we make it right, personally. [confirm:make-it-right]' },
+          { name: 'Legacy', text: 'A San Antonio family building something meant to last for our clients and our team.' },
+        ],
+        note: '[The White Glove Standard, in full](/white-glove-standard)',
+      },
+      {
+        kind: 'plate',
+        title: 'Why the diamond?',
+        text: 'A diamond is not created overnight. It is formed through pressure, refined with care and polished with precision. That same idea reflects the Diamond Shine journey.',
+        pic: 'gloved-hand-stone.jpg',
+        flip: true,
+        items: [
+          'Clarity: bringing order and peace into every space we care for.',
+          'Strength: a family-owned company built with resilience and discipline.',
+          'Value: protecting the beauty, dignity and worth of every property.',
+          'Excellence: holding every service to the White Glove standard.',
+        ],
+      },
+      {
+        kind: 'columns',
+        title: 'Skilled roles, not interchangeable labor',
+        text: 'Different work asks for different training. These are the disciplines that make up a Diamond Shine team.',
+        columns: [
+          { name: 'Home Preservation Specialists', items: ['The people who carry the standard into the home, trained on materials, sequence and presentation, because the result depends on judgment as much as effort.'] },
+          { name: 'Restoration technicians', items: ['Carpet, tile and grout, hard flooring and odor work need different methods and equipment, and the discipline to know when a surface can be renewed and when it cannot.'] },
+          { name: 'Presentation team', items: ['Homes headed to photography, showings or a final walkthrough are prepared by people who understand what a buyer notices first.'] },
+          { name: 'Client care', items: ['Scheduling, preferences, access, follow-up and documentation. Much of what makes service feel easy happens before anyone arrives.'] },
+        ],
+        note: 'If care, precision and pride in finished work describe how you already operate, [we would like to hear from you](/careers).',
+      },
+      {
+        kind: 'limits',
+        id: 'community',
+        title: 'San Antonio is our home',
+        text: 'We live here, our team lives here, and the homes we care for belong to our neighbors. These are the areas we care about and intend to grow into as a family business.',
+        items: [
+          'Continuing to support San Antonio military families through move-in and move-out transitions.',
+          'Expanding homeowner education through [The Home Journal](/journal), freely available to anyone.',
+          'Growing career pathways for home preservation specialists rather than short-term crew roles.',
+          'Looking for local ways to serve neighbors and families as our capacity grows.',
+        ],
+        note: 'We do not claim partnerships, sponsorships or charitable programs we have not yet built. When something becomes real, it will be named here.',
+      },
+    ],
+  },
+  es: {
+    page: {
+      title: 'Sobre Diamond Shine, empresa familiar de cuidado del hogar en San Antonio',
+      description: 'Diamond Shine es una empresa familiar de preservación del hogar y cuidado de propiedades, fundada en San Antonio en 2017 sobre el cuidado responsable, la confianza y la atención al detalle. Conozca a la familia Leal.',
+      h1: 'Un estándar familiar, desde&nbsp;2017.',
+      lead: 'Diamond Shine es una empresa familiar de preservación del hogar y cuidado de propiedades, fundada en San Antonio en 2017 sobre el cuidado responsable, la confianza y la atención a los detalles que la mayoría pasa por alto.',
+      family: 'Conozca a la familia Leal',
+      familyText: 'La misma familia con la que usted habla es la familia que responde por el trabajo. Retratos tal como se publican hoy. [confirm:portraits]',
+      profile: 'Leer el perfil completo',
+      closeTitle: 'Un espacio a la altura de su&nbsp;historia',
+      closeText: 'Cuéntenos sobre su casa y los tiempos que prefiere. Confirmaremos con usted el alcance, el precio y la disponibilidad antes de reservar nada.',
+    },
+    bios: {
+      'lilian-leal': 'Lilian fundó Diamond Shine en San Antonio en 2017 y sigue siendo el corazón de su cultura de servicio. Lidera con el ejemplo y enseña el cuidado, la discreción y la constancia detrás del Estándar White Glove.',
+      'sergio-leal': 'Sergio aporta criterio práctico a las operaciones, el oficio, las ventas y el recorrido del cliente, y conecta los servicios del hogar en torno a una relación de confianza.',
+      'emilio-leal': 'Emilio dirige Diamond Shine con la mirada puesta en la experiencia y la satisfacción del cliente, en estándares de servicio constantes y en una bienvenida más coordinada para las familias que se mudan a San Antonio.',
+    },
+    story: [
+      {
+        kind: 'plate',
+        title: 'Construida sobre la confianza, definida por el detalle',
+        text: 'Lo que empezó en 2017 como un compromiso familiar con un servicio honesto y excepcional ha crecido más allá de la limpieza tradicional, hacia la restauración, la preservación, el cuidado recurrente y la presentación de propiedades. Creemos que un hogar bien cuidado merece continuidad, responsabilidad y atención a los detalles que definen cómo se siente.',
+        note: 'Atendemos a propietarios, a familias que crecen, a familias militares en mudanzas PCS, a profesionales inmobiliarios que preparan sus listados y a dueños de negocios que entienden lo que dice un espacio bien cuidado.',
+        pic: 'preservation.jpg',
+      },
+      {
+        kind: 'steps',
+        title: 'De dónde venimos, hacia dónde vamos',
+        text: 'La versión honesta: una empresa familiar que siguió escuchando lo que las casas realmente necesitaban.',
+        steps: [
+          { name: 'De dónde venimos', text: 'En 2017, una familia de San Antonio decidió construir una empresa basada en el trabajo honesto y la verdadera atención al detalle, empezando por limpiar casas como nos gustaría que cuidaran la nuestra.' },
+          { name: 'Lo que aprendimos', text: 'Años dentro de casas reales nos revelaron algo: las familias no necesitaban más citas aisladas. Necesitaban a alguien atento a cómo envejecía la casa.' },
+          { name: 'En lo que nos convertimos', text: 'Preservación del hogar. Restaurar antes de reemplazar. Cuidado recurrente, entregas inspiradas en la hospitalidad, presentación para la venta y el cuidado responsable de residencias privadas.' },
+          { name: 'Hacia dónde vamos', text: 'Una institución de San Antonio en el cuidado de casas excepcionales: todavía familiar, todavía responsable con nombre y apellido, con un equipo creciente de especialistas capacitados.' },
+        ],
+      },
+    ],
+    standard: [
+      {
+        kind: 'rows',
+        title: 'Seis compromisos, en cada hogar',
+        pic: 'hero-home.jpg',
+        items: [
+          { name: 'Discreción', text: 'Una presencia callada y respetuosa en cada hogar. Respetamos la privacidad, los horarios y el espacio de su familia.' },
+          { name: 'Precisión', text: 'Las esquinas, los bordes, las uniones y los acabados son la verdadera medida de nuestro trabajo.' },
+          { name: 'Constancia', text: 'El mismo estándar desde la primera visita hasta la número cien, sin bajar el nivel y sin atajos.' },
+          { name: 'Oficio', text: 'Restauración, preservación y acabados hechos con el cuidado de un buen artesano.' },
+          { name: 'Responsabilidad', text: 'Empresa familiar desde 2017. Si algo no queda bien, lo corregimos, en persona. [confirm:make-it-right]' },
+          { name: 'Legado', text: 'Una familia de San Antonio construyendo algo hecho para durar, para nuestros clientes y para nuestro equipo.' },
+        ],
+        note: '[El Estándar White Glove, completo](/white-glove-standard)',
+      },
+      {
+        kind: 'plate',
+        title: '¿Por qué el diamante?',
+        text: 'Un diamante no se forma de la noche a la mañana. Se forma bajo presión, se refina con cuidado y se pule con precisión. Esa misma idea refleja el camino de Diamond Shine.',
+        pic: 'gloved-hand-stone.jpg',
+        flip: true,
+        items: [
+          'Claridad: llevar orden y paz a cada espacio que cuidamos.',
+          'Fortaleza: una empresa familiar construida con resiliencia y disciplina.',
+          'Valor: proteger la belleza, la dignidad y el valor de cada propiedad.',
+          'Excelencia: cumplir en cada servicio con el estándar White Glove.',
+        ],
+      },
+      {
+        kind: 'columns',
+        title: 'Funciones especializadas, no mano de obra intercambiable',
+        text: 'Cada trabajo pide una formación distinta. Estas son las disciplinas que forman un equipo de Diamond Shine.',
+        columns: [
+          { name: 'Especialistas en Preservación del Hogar', items: ['Las personas que llevan el estándar al hogar, formadas en materiales, orden de trabajo y presentación, porque el resultado depende tanto del criterio como del esfuerzo.'] },
+          { name: 'Técnicos de restauración', items: ['Las alfombras, los azulejos y las juntas, los pisos duros y los olores necesitan métodos y equipos distintos, y la disciplina para saber cuándo una superficie se puede renovar y cuándo no.'] },
+          { name: 'Equipo de presentación', items: ['Las casas que van a fotografiarse, a mostrarse o a un recorrido final las preparan personas que entienden lo primero que nota un comprador.'] },
+          { name: 'Atención al cliente', items: ['Programación, preferencias, accesos, seguimiento y documentación. Mucho de lo que hace que el servicio se sienta fácil ocurre antes de que alguien llegue.'] },
+        ],
+        note: 'Si el cuidado, la precisión y el orgullo por el trabajo bien terminado describen su manera de trabajar, [nos gustaría saber de usted](/careers).',
+      },
+      {
+        kind: 'limits',
+        id: 'community',
+        title: 'San Antonio es nuestro hogar',
+        text: 'Vivimos aquí, nuestro equipo vive aquí, y las casas que cuidamos son de nuestros vecinos. Estas son las áreas que nos importan y en las que queremos crecer como empresa familiar.',
+        items: [
+          'Seguir apoyando a las familias militares de San Antonio en sus mudanzas de entrada y salida.',
+          'Ampliar la educación para propietarios a través de [El Diario del Hogar](/journal), de acceso libre para todos.',
+          'Crear trayectorias profesionales para especialistas en preservación del hogar, en lugar de puestos temporales.',
+          'Buscar maneras locales de servir a vecinos y familias a medida que crezca nuestra capacidad.',
+        ],
+        note: 'No anunciamos alianzas, patrocinios ni programas benéficos que aún no hemos creado. Cuando algo se haga realidad, lo nombraremos aquí.',
+      },
+    ],
+  },
 };
-
-const story: Section[] = [
-  {
-    kind: 'plate',
-    title: 'Built on trust, defined by detail',
-    text: 'What began in 2017 as a family commitment to honest, exceptional service has grown beyond traditional cleaning into restoration, preservation, recurring care and property presentation. We believe a well-cared-for home deserves continuity, accountability and attention to the details that shape how it feels.',
-    note: 'We serve homeowners, growing families, military families navigating PCS moves, real estate professionals preparing listings, and business owners who understand what a well-kept space says.',
-    pic: 'preservation.jpg',
-  },
-  {
-    kind: 'steps',
-    title: 'Where we began, where we’re going',
-    text: 'The honest version: a family business that kept listening to what homes actually needed.',
-    steps: [
-      { name: 'Where we began', text: 'In 2017, a San Antonio family decided to build a company around honest work and real attention to detail, starting with cleaning homes the way we would want our own cared for.' },
-      { name: 'What we learned', text: 'Years inside real homes revealed something: families did not need more isolated appointments. They needed someone paying attention to how the home was aging.' },
-      { name: 'What we became', text: 'Home preservation. Restoration before replacement. Recurring care, hospitality-inspired handoffs, market-ready presentation and stewardship for private residences.' },
-      { name: 'Where we’re going', text: 'A San Antonio institution for how exceptional homes are cared for: still family-owned, still accountable by name, with a growing team of skilled specialists.' },
-    ],
-  },
-];
-
-const standard: Section[] = [
-  {
-    kind: 'rows',
-    title: 'Six commitments, in every home',
-    pic: 'hero-home.jpg',
-    items: [
-      { name: 'Discretion', text: 'A quiet, respectful presence in every home. We honor your family’s privacy, schedule and space.' },
-      { name: 'Precision', text: 'Corners, edges, seams and finishes are treated as the true measure of our work.' },
-      { name: 'Consistency', text: 'The same standard from the first visit to the hundredth, with no drop-off and no shortcuts.' },
-      { name: 'Craftsmanship', text: 'Restoration, preservation and finish work delivered with tradesman-level care.' },
-      { name: 'Accountability', text: 'Family-owned since 2017. If it isn’t right, we make it right, personally. [confirm:make-it-right]' },
-      { name: 'Legacy', text: 'A San Antonio family building something meant to last for our clients and our team.' },
-    ],
-    note: '[The White Glove Standard, in full](/white-glove-standard)',
-  },
-  {
-    kind: 'plate',
-    title: 'Why the diamond?',
-    text: 'A diamond is not created overnight. It is formed through pressure, refined with care and polished with precision. That same idea reflects the Diamond Shine journey.',
-    pic: 'gloved-hand-stone.jpg',
-    flip: true,
-    items: [
-      'Clarity: bringing order and peace into every space we care for.',
-      'Strength: a family-owned company built with resilience and discipline.',
-      'Value: protecting the beauty, dignity and worth of every property.',
-      'Excellence: holding every service to the White Glove standard.',
-    ],
-  },
-  {
-    kind: 'columns',
-    title: 'Skilled roles, not interchangeable labor',
-    text: 'Different work asks for different training. These are the disciplines that make up a Diamond Shine team.',
-    columns: [
-      { name: 'Home Preservation Specialists', items: ['The people who carry the standard into the home, trained on materials, sequence and presentation, because the result depends on judgment as much as effort.'] },
-      { name: 'Restoration technicians', items: ['Carpet, tile and grout, hard flooring and odor work need different methods and equipment, and the discipline to know when a surface can be renewed and when it cannot.'] },
-      { name: 'Presentation team', items: ['Homes headed to photography, showings or a final walkthrough are prepared by people who understand what a buyer notices first.'] },
-      { name: 'Client care', items: ['Scheduling, preferences, access, follow-up and documentation. Much of what makes service feel easy happens before anyone arrives.'] },
-    ],
-    note: 'If care, precision and pride in finished work describe how you already operate, [we would like to hear from you](/careers).',
-  },
-  {
-    kind: 'limits',
-    id: 'community',
-    title: 'San Antonio is our home',
-    text: 'We live here, our team lives here, and the homes we care for belong to our neighbors. These are the areas we care about and intend to grow into as a family business.',
-    items: [
-      'Continuing to support San Antonio military families through move-in and move-out transitions.',
-      'Expanding homeowner education through [The Home Journal](/journal), freely available to anyone.',
-      'Growing career pathways for home preservation specialists rather than short-term crew roles.',
-      'Looking for local ways to serve neighbors and families as our capacity grows.',
-    ],
-    note: 'We do not claim partnerships, sponsorships or charitable programs we have not yet built. When something becomes real, it will be named here.',
-  },
-];
+const { page: c, bios, story, standard } = copy[lang];
 ---
-<Base
-  title="About Diamond Shine, a Family-Owned San Antonio Home Care Company"
-  description="Diamond Shine is a family-owned home preservation and property care company, founded in San Antonio in 2017 on stewardship, trust and attention to detail. Meet the Leal family."
-  service="not-sure"
->
-  <PageHero
-    h1="A family-owned standard, since&nbsp;2017."
-    lead="Diamond Shine is a family-owned home preservation and property care company, founded in San Antonio in 2017 on stewardship, trust and attention to the details most people overlook."
-    main="white-glove-detail.webp"
-    service="not-sure"
-    review="serena"
-  />
+<Base title={c.title} description={c.description} service="not-sure">
+  <PageHero h1={c.h1} lead={c.lead} main="white-glove-detail.webp" service="not-sure" review="serena" />
 
   <Sections sections={story} />
 
   <section class="section" aria-labelledby="family-title">
     <div class="wrap">
       <div class="section-head">
-        <h2 id="family-title">Meet the Leal family</h2>
-        <p set:html={rich('The same family you speak with is the family accountable for the work. Portraits as published today. [confirm:portraits]')} />
+        <h2 id="family-title">{c.family}</h2>
+        <p set:html={rich(c.familyText)} />
       </div>
       <div class="cards">
         {people.map((p) => (
@@ -120,7 +219,7 @@ const standard: Section[] = [
               <p class="muted">{p.role}</p>
               <p>{bios[p.slug]}</p>
               <blockquote>&ldquo;{p.quote}&rdquo;</blockquote>
-              <p class="card-more"><a href={`/people/${p.slug}`}>Read the full profile</a></p>
+              <p class="card-more"><a href={`/people/${p.slug}`}>{c.profile}</a></p>
             </div>
           </article>
         ))}
@@ -130,11 +229,5 @@ const standard: Section[] = [
 
   <Sections sections={standard} startSoft />
 
-  <Close
-    title="A space worthy of your&nbsp;story"
-    text="Share your home and preferred timing. We will confirm the scope, pricing and availability with you before anything is reserved."
-    picture="fresh-linens.webp"
-    service="not-sure"
-    review="rob"
-  />
+  <Close title={c.closeTitle} text={c.closeText} picture="fresh-linens.webp" service="not-sure" review="rob" />
 </Base>

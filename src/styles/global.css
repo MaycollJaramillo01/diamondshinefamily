@@ -59,12 +59,6 @@
   --ease-smooth-out: cubic-bezier(0.22, 1, 0.36, 1);
   --blur-medium: 3px;
 
-  --modal-open-dur: 250ms;
-  --modal-close-dur: 150ms;
-  --modal-scale: 0.96;
-  --modal-scale-close: 0.96;
-  --modal-ease: cubic-bezier(0.22, 1, 0.36, 1);
-
   --stagger-dur: 500ms;
   --stagger-distance: 12px;
   --stagger-stagger: 40ms;
@@ -304,6 +298,8 @@ summary::-webkit-details-marker { display: none; }
 @media (max-width: 479px) {
   .logo-badge { width: 44px; height: 44px; }
   .logo-word { width: 146px; }
+  /* The Spanish descriptor is longer: it wraps under the wordmark instead of pushing the menu off the screen. */
+  .logo-desc { white-space: normal; text-wrap: balance; }
 }
 @media (max-width: 359px) {
   .logo-desc { display: none; }
@@ -316,57 +312,17 @@ summary::-webkit-details-marker { display: none; }
 .site-head--overlay .nav-cta { display: none; }
 .site-head--overlay .menu-phone > summary { background: var(--paper); }
 
-/* the top line, as on the company's original site: translation help on one side, the phone on the other */
+/* the top line: the site's two languages on one side, the phone on the other */
 .topbar { background: var(--navy); color: var(--white); font-size: var(--step-small); letter-spacing: 0.02em; }
 .topbar-in { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 44px; }
-.topbar-link { display: none; align-items: center; gap: 8px; min-height: 44px; padding: 0; background: none; border: 0; color: var(--white); font-weight: 500; text-decoration: none; cursor: pointer; transition: color var(--duration-quick) ease-out; }
-.js .topbar-link, a.topbar-link { display: inline-flex; }
-a.topbar-link { margin-left: auto; }
+.topbar-langs { display: flex; align-items: center; gap: 10px; color: var(--sky); }
+.topbar-link { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; color: var(--white); font-weight: 500; text-decoration: none; transition: color var(--duration-quick) ease-out; }
 .topbar-link:hover { color: var(--sky); }
+.topbar-langs .topbar-link[aria-current] { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.4em; }
+.topbar-langs .topbar-link:not([aria-current]) { color: var(--sky); }
+.topbar-langs .topbar-link:not([aria-current]):hover { color: var(--white); }
 .topbar-icon { width: 16px; height: 16px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
 @media (max-width: 640px) { .topbar-more { display: none; } }
-
-/* the translation help: the browser translates, this explains how, in English or Spanish */
-.translate { width: min(580px, calc(100% - 32px)); max-height: 85dvh; padding: 0; border: 0; background: var(--paper); color: var(--text); font-size: var(--step-body); overflow-y: auto; }
-.translate::backdrop { background: rgb(0 16 40 / 0.6); }
-.translate-in { display: grid; gap: 16px; padding: clamp(32px, 4vw, 48px) clamp(24px, 4vw, 48px); text-align: center; }
-.translate-in > [hidden] { display: none; }
-.translate h2 { font-size: clamp(1.625rem, 1.3rem + 1vw, 2.125rem); }
-.translate p { margin-top: 10px; color: var(--muted); }
-.translate h3 { margin-top: 18px; font-family: var(--font); font-size: var(--step-body); font-weight: 500; letter-spacing: 0.01em; }
-.translate h3 + p { margin-top: 4px; }
-.translate-langs { display: flex; justify-content: center; gap: 8px; margin-top: 10px; }
-.translate-langs button { min-height: 44px; padding: 8px 20px; background: var(--ice); color: var(--navy); border: 0; font-weight: 500; cursor: pointer; transition: background-color var(--duration-quick) ease-out, color var(--duration-quick) ease-out; }
-.translate-langs button[aria-pressed='true'] { background: var(--navy); color: var(--white); }
-.translate-help a { margin-inline: 6px; }
-.translate .btn { margin-top: 18px; }
-.t-modal {
-  transform-origin: center;
-  transform: scale(var(--modal-scale));
-  opacity: 0;
-  pointer-events: none;
-  transition:
-    transform var(--modal-open-dur) var(--modal-ease),
-    opacity   var(--modal-open-dur) var(--modal-ease);
-  will-change: transform, opacity;
-}
-.t-modal.is-open {
-  transform: scale(1);
-  opacity: 1;
-  pointer-events: auto;
-}
-.t-modal.is-closing {
-  transform: scale(var(--modal-scale-close));
-  opacity: 0;
-  pointer-events: none;
-  transition:
-    transform var(--modal-close-dur) var(--modal-ease),
-    opacity   var(--modal-close-dur) var(--modal-ease);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .t-modal { transition: none !important; }
-}
 
 /* hero, inside pages */
 .page-hero { padding-block: clamp(40px, 5vw, 80px) var(--space); }

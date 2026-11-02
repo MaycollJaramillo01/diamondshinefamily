@@ -40,7 +40,8 @@ if (matchMedia('(prefers-reduced-motion: no-preference) and (min-width: 641px)')
 }
 
 // Office hours, read in San Antonio's time. The published hours stay in the HTML either way.
-for (const el of document.querySelectorAll<HTMLElement>('[data-office-status]')) el.textContent = officeStatus();
+const lang = document.documentElement.lang === 'es' ? 'es' : 'en';
+for (const el of document.querySelectorAll<HTMLElement>('[data-office-status]')) el.textContent = officeStatus(new Date(), lang);
 
 document.addEventListener('click', (event) => {
   const link = (event.target as Element).closest?.('a[href^="tel:"]');

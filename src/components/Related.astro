@@ -2,13 +2,15 @@
 // Where to go next from this page: context, not a second call to action.
 import { rich } from '../lib/rich';
 import More from './More.astro';
+import { langOf, ui } from '../lib/i18n';
 
 interface Props {
   items: { label: string; href: string; line: string }[];
   title?: string;
   soft?: boolean;
 }
-const { items, title = 'Related care', soft = true } = Astro.props;
+const t = ui[langOf(Astro.currentLocale)];
+const { items, title = t.related, soft = true } = Astro.props;
 ---
 <section class:list={['section', { 'section--soft': soft }]}>
   <div class="wrap">
@@ -19,7 +21,7 @@ const { items, title = 'Related care', soft = true } = Astro.props;
           <div class="card-body card-body--flat">
             <strong class="card-title">{r.label}</strong>
             <span class="muted" set:html={rich(r.line)} />
-            <More label="See details" />
+            <More label={t.seeDetails} />
           </div>
         </a>
       ))}

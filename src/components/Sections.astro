@@ -3,7 +3,7 @@
 import Photo from './Photo.astro';
 import { pic } from '../data/pictures';
 import { rich } from '../lib/rich';
-import { reviews } from '../data/reviews';
+import { data, langOf, ui } from '../lib/i18n';
 import type { Section } from '../data/page-types';
 
 interface Props {
@@ -14,6 +14,8 @@ interface Props {
   startSoft?: boolean;
 }
 const { sections, caption, startSoft = false } = Astro.props;
+const lang = langOf(Astro.currentLocale);
+const t = ui[lang];
 const tone = (i: number) => ((i % 2 === 1) !== startSoft ? 'section--soft' : '');
 const half = '(min-width: 1248px) 576px, (min-width: 900px) 46vw, 100vw';
 const third = '(min-width: 1100px) 33vw, (min-width: 640px) 50vw, 100vw';
@@ -202,13 +204,13 @@ const third = '(min-width: 1100px) 33vw, (min-width: 640px) 50vw, 100vw';
     );
   }
   if (s.kind === 'quote') {
-    const r = reviews.find((x) => x.id === s.review)!;
+    const r = data[lang].reviews.find((x) => x.id === s.review)!;
     return (
-      <section id={s.id} class:list={['section', tone(i)]} aria-label="What a client said">
+      <section id={s.id} class:list={['section', tone(i)]} aria-label={t.clientSaid}>
         <div class="wrap">
           <figure class="quote-big">
             <blockquote>&ldquo;{r.excerpt ?? r.text}&rdquo;</blockquote>
-            <figcaption><a href="/reviews">{r.name}, {r.source}</a></figcaption>
+            <figcaption><a href="/reviews">{r.name}, {r.source}</a>{t.translated && ` (${t.translated})`}</figcaption>
           </figure>
         </div>
       </section>

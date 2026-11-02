@@ -2,6 +2,9 @@
 // One responsive picture. `ratio` is width/height; `show` is its largest width on screen in CSS px, used to size the 2x file.
 import { Picture } from 'astro:assets';
 import { img } from '../lib/images';
+import { pictures } from '../data/pictures';
+import { alts } from '../data/pictures.es';
+import { langOf } from '../lib/i18n';
 
 interface Props {
   src: string;
@@ -16,7 +19,9 @@ interface Props {
   class?: string;
 }
 
-const { src, alt, ratio, show = 640, sizes = '100vw', caption, eager = false, position = 'center', quality = 62, class: cls } = Astro.props;
+const { src, alt: given, ratio, show = 640, sizes = '100vw', caption, eager = false, position = 'center', quality = 62, class: cls } = Astro.props;
+// A picture's standard description follows the page's language; an alt a page writes itself is already in it.
+const alt = langOf(Astro.currentLocale) === 'es' && given && given === pictures[src]?.alt ? alts[src] : given;
 const image = img(src);
 const r = ratio ?? image.width / image.height;
 

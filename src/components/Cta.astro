@@ -1,8 +1,8 @@
 ---
 // The site's one call to action. It carries the page's service, so the form opens with it selected.
-import { brand } from '../data/brand';
+import { langOf, ui } from '../lib/i18n';
 
 const { service, href, class: cls } = Astro.props;
 const target = href ?? `/home-evaluation${service ? `?service=${service}` : ''}`;
 ---
-<a class:list={['btn', cls]} href={target} data-cta>{brand.cta}</a>
+<a class:list={['btn', cls]} href={target} data-cta>{ui[langOf(Astro.currentLocale)].cta}</a>

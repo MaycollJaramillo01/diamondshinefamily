@@ -16,8 +16,15 @@ export const articlePics: Record<string, [string, string]> = {
   'white-glove-floor-ritual-finishing-touch': ['rose-vanilla.webp', 'saffron-amberwood.webp'],
 };
 
-export const articleNotes: Record<string, string> = {
-  '8000-homes-served-thoughtful-home-care': 'The 8,000+ figure is as published. [confirm:homes-8000]',
-  'white-glove-floor-ritual-finishing-touch': 'Prices and availability are as published. [confirm:prices]',
-  'good-samaritan-care-beyond-the-home': 'As published by the family. [confirm:good-samaritan]',
+export const articleNotes: Record<'en' | 'es', Record<string, string>> = {
+  en: {
+    '8000-homes-served-thoughtful-home-care': 'The 8,000+ figure is as published. [confirm:homes-8000]',
+    'white-glove-floor-ritual-finishing-touch': 'Prices and availability are as published. [confirm:prices]',
+    'good-samaritan-care-beyond-the-home': 'As published by the family. [confirm:good-samaritan]',
+  },
+  es: {
+    '8000-homes-served-thoughtful-home-care': 'La cifra de más de 8,000 es la publicada. [confirm:homes-8000]',
+    'white-glove-floor-ritual-finishing-touch': 'Los precios y la disponibilidad son los publicados. [confirm:prices]',
+    'good-samaritan-care-beyond-the-home': 'Tal como lo publica la familia. [confirm:good-samaritan]',
+  },
 };

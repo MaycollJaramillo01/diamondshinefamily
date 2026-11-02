@@ -6,26 +6,48 @@ import Close from '../../components/Close.astro';
 import More from '../../components/More.astro';
 import { pic } from '../../data/pictures';
 import { articlePics } from '../../data/journal-pics';
+import { langOf, showDate } from '../../lib/i18n';
+
+const lang = langOf(Astro.currentLocale);
+const c = {
+  en: {
+    title: 'Home Care Journal for San Antonio Homeowners | Diamond Shine',
+    description: 'What we have learned inside San Antonio homes since 2017: preservation, materials, seasonal rhythm, presentation and the quiet details that make a residence feel considered.',
+    h1: 'The Home Journal, on caring for fine&nbsp;homes.',
+    lead: 'What we have learned inside San Antonio homes since 2017: preservation, materials, seasonal rhythm, presentation, and the quiet details that make a residence feel considered.',
+    articles: 'Articles',
+    read: 'Read the article',
+    closeTitle: 'Ready for a&nbsp;conversation?',
+    closeText: 'Nothing here is a sales pitch. When you would like the home looked at properly, an evaluation is the natural next step.',
+  },
+  es: {
+    title: 'Diario del cuidado del hogar para propietarios de San Antonio | Diamond Shine',
+    description: 'Lo que hemos aprendido dentro de las casas de San Antonio desde 2017: preservación, materiales, el ritmo de las estaciones, presentación y los detalles discretos que hacen sentir cuidada una residencia.',
+    h1: 'El Diario del Hogar, sobre el cuidado de casas&nbsp;excepcionales.',
+    lead: 'Lo que hemos aprendido dentro de las casas de San Antonio desde 2017: preservación, materiales, el ritmo de las estaciones, la presentación y los detalles discretos que hacen sentir cuidada una residencia.',
+    articles: 'Artículos',
+    read: 'Leer el artículo',
+    closeTitle: '¿Conversamos?',
+    closeText: 'Nada de esto es un discurso de ventas. Cuando quiera que alguien revise la casa como se debe, una evaluación es el siguiente paso natural.',
+  },
+}[lang];
 
 const featuredId = '8000-homes-served-thoughtful-home-care';
-const all = (await getCollection('journal')).sort((a, b) => Date.parse(b.data.date) - Date.parse(a.data.date));
+const all = (await getCollection(lang === 'es' ? 'journalEs' : 'journal')).sort((a, b) => Date.parse(b.data.date) - Date.parse(a.data.date));
 const featured = all.find((a) => a.id === featuredId)!;
 // Two articles lead at half width each; the rest follow in equal columns.
 const [second, ...rest] = all.filter((a) => a.id !== featuredId);
 const lead = [featured, second];
 ---
-<Base
-  title="Home Care Journal for San Antonio Homeowners | Diamond Shine"
-  description="What we have learned inside San Antonio homes since 2017: preservation, materials, seasonal rhythm, presentation and the quiet details that make a residence feel considered."
->
+<Base title={c.title} description={c.description}>
   <section class="page-hero">
     <div class="wrap narrow stack t-stagger j-head">
-      <h1 class="t-stagger-line">The Home Journal, on caring for fine&nbsp;homes.</h1>
-      <p class="lead t-stagger-line t-stagger-line--2">What we have learned inside San Antonio homes since 2017: preservation, materials, seasonal rhythm, presentation, and the quiet details that make a residence feel considered.</p>
+      <h1 class="t-stagger-line" set:html={c.h1} />
+      <p class="lead t-stagger-line t-stagger-line--2">{c.lead}</p>
     </div>
   </section>
 
-  <section class="section" aria-label="Articles">
+  <section class="section" aria-label={c.articles}>
     <div class="wrap">
       <div class="j-pair">
         {lead.map((a, i) => (
@@ -34,8 +56,8 @@ const lead = [featured, second];
             <div class="card-body">
               <h2 class="j-lead">{a.data.title}</h2>
               <span>{a.data.dek}</span>
-              <span class="small muted">{a.data.category} · {a.data.date}, {a.data.read}</span>
-              <More label="Read the article" />
+              <span class="small muted">{a.data.category} · {showDate(a.data.date, lang)}, {a.data.read}</span>
+              <More label={c.read} />
             </div>
           </a>
         ))}
@@ -48,8 +70,8 @@ const lead = [featured, second];
             <div class="card-body">
               <h2 class="j-title">{a.data.title}</h2>
               <span>{a.data.dek}</span>
-              <span class="small muted">{a.data.category} · {a.data.date}, {a.data.read}</span>
-              <More label="Read the article" />
+              <span class="small muted">{a.data.category} · {showDate(a.data.date, lang)}, {a.data.read}</span>
+              <More label={c.read} />
             </div>
           </a>
         ))}
@@ -57,12 +79,7 @@ const lead = [featured, second];
     </div>
   </section>
 
-  <Close
-    title="Ready for a&nbsp;conversation?"
-    text="Nothing here is a sales pitch. When you would like the home looked at properly, an evaluation is the natural next step."
-    picture="limestone-fireplace.jpeg"
-    service="not-sure"
-  />
+  <Close title={c.closeTitle} text={c.closeText} picture="limestone-fireplace.jpeg" service="not-sure" />
 </Base>
 
 <style>

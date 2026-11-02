@@ -3,6 +3,7 @@ import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import { brand, areas } from '../data/brand';
+import { langOf, pathIn, ui } from '../lib/i18n';
 
 interface Props {
   title: string;
@@ -15,8 +16,11 @@ interface Props {
 }
 const { title, description, og = '/og/home.jpg', service, ctaHref, schema = [], overlay = false } = Astro.props;
 
-const path = Astro.url.pathname.replace(/\.html$/, '').replace(/\/index$/, '') || '/';
+const lang = langOf(Astro.currentLocale);
+const path = pathIn(Astro.url.pathname, lang);
 const canonical = new URL(path, Astro.site).href;
+// Every page exists in both languages at the same path, so each names its twin.
+const alternates = { en: pathIn(path, 'en'), es: pathIn(path, 'es'), 'x-default': pathIn(path, 'en') };
 const ogUrl = new URL(og, Astro.site).href;
 
 const business = {
@@ -26,7 +30,7 @@ const business = {
   name: brand.name,
   alternateName: brand.workingName,
   legalName: brand.legalEntity,
-  description: `Family-owned ${brand.descriptor.toLowerCase()} in ${brand.city}, Texas: specialized cleaning, restoration and recurring care.`,
+  description: ui[lang].business,
   url: new URL('/', Astro.site).href,
   image: ogUrl,
   logo: new URL('/brand/logo-full.webp', Astro.site).href,
@@ -50,13 +54,14 @@ const business = {
 };
 ---
 <!doctype html>
-<html lang="en" data-theme="light">
+<html lang={lang} data-theme="light">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
+    {Object.entries(alternates).map(([code, href]) => <link rel="alternate" hreflang={code} href={new URL(href, Astro.site).href} />)}
     <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
@@ -71,7 +76,8 @@ const business = {
     <meta property="og:image" content={ogUrl} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale" content={lang === 'es' ? 'es_US' : 'en_US'} />
+    <meta property="og:locale:alternate" content={lang === 'es' ? 'en_US' : 'es_US'} />
     <meta name="twitter:card" content="summary_large_image" />
     <script is:inline>
       // The form's second step only hides when scripts run. If the site script never arrives, everything shows again.

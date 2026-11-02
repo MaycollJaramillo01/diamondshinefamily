@@ -6,6 +6,7 @@ import ProofLine from './ProofLine.astro';
 import { pic } from '../data/pictures';
 import { rich } from '../lib/rich';
 import { brand } from '../data/brand';
+import { langOf, ui } from '../lib/i18n';
 
 interface Props {
   h1: string;
@@ -20,12 +21,13 @@ interface Props {
   action?: { label: string; href: string };
 }
 const { h1, lead, main, position, crumb, service, review = 'serena', caption, action } = Astro.props;
+const t = ui[langOf(Astro.currentLocale)];
 ---
 <section class="page-hero">
   <div class="wrap split">
     <div class="page-hero-copy t-stagger">
       {crumb && (
-        <nav class="crumb t-stagger-line" aria-label="You are here">
+        <nav class="crumb t-stagger-line" aria-label={t.youAreHere}>
           {crumb.map((c, i) => <>{i > 0 && <span aria-hidden="true"> / </span>}<a href={c.href}>{c.label}</a></>)}
         </nav>
       )}
@@ -37,7 +39,7 @@ const { h1, lead, main, position, crumb, service, review = 'serena', caption, ac
         <>
           <div class="actions t-stagger-line t-stagger-line--4">
             <Cta service={service} />
-            <a class="btn btn--line" href={brand.phoneHref}>Call {brand.phone}</a>
+            <a class="btn btn--line" href={brand.phoneHref}>{t.call} {brand.phone}</a>
           </div>
           <ProofLine review={review} class="t-stagger-line t-stagger-line--5" />
         </>

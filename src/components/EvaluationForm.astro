@@ -1,70 +1,126 @@
 ---
 // Two short steps. Without scripts both show at once. Nothing claims success unless an authorized endpoint answers OK.
 import { brand } from '../data/brand';
-import { serviceOptions, sizeOptions, surfaceOptions, timingOptions } from '../data/form';
+import * as en from '../data/form';
+import * as es from '../data/form.es';
+import { langOf, ui } from '../lib/i18n';
 
 const { service = '', id = 'evaluation-form' } = Astro.props;
 const hasEndpoint = Boolean(brand.formEndpoint);
+const lang = langOf(Astro.currentLocale);
+const { serviceOptions, sizeOptions, surfaceOptions, timingOptions } = lang === 'es' ? es : en;
+const c = {
+  en: {
+    step1: 'Step 1 of 2: you and the service',
+    service: 'Service',
+    chooseService: 'Choose a service',
+    notSure: 'Not sure yet',
+    name: 'Full name',
+    phone: 'Phone',
+    email: 'Email',
+    next: 'Continue',
+    nextHint: 'Next: your property and timing. Two more short questions, the rest optional.',
+    step2: 'Step 2 of 2: the home',
+    area: 'ZIP code or neighborhood',
+    optional: '(optional)',
+    size: 'Approximate size',
+    chooseSize: 'Choose a size',
+    surfaces: 'Surfaces you care most about',
+    timing: 'Timing',
+    chooseTiming: 'Choose a timing',
+    notes: 'Anything we should know',
+    notesHint: 'Please do not include gate codes, alarm details or payment information.',
+    back: 'Back to step 1',
+    consent: `By submitting, you agree to be contacted by ${brand.name} regarding your request. A request does not reserve a date, and no payment is collected here.`,
+    pending: 'This form is waiting for its authorized recipient, so for now it sends nothing. To request your evaluation today, call or text',
+    or: 'or write to',
+  },
+  es: {
+    step1: 'Paso 1 de 2: usted y el servicio',
+    service: 'Servicio',
+    chooseService: 'Elija un servicio',
+    notSure: 'Aún no lo sé',
+    name: 'Nombre completo',
+    phone: 'Teléfono',
+    email: 'Correo electrónico',
+    next: 'Continuar',
+    nextHint: 'Después: su propiedad y los tiempos. Dos preguntas breves más; el resto es opcional.',
+    step2: 'Paso 2 de 2: la casa',
+    area: 'Código postal o vecindario',
+    optional: '(opcional)',
+    size: 'Tamaño aproximado',
+    chooseSize: 'Elija un tamaño',
+    surfaces: 'Las superficies que más le importan',
+    timing: 'Plazo',
+    chooseTiming: 'Elija un plazo',
+    notes: 'Algo que debamos saber',
+    notesHint: 'Por favor, no incluya códigos de acceso, datos de la alarma ni información de pago.',
+    back: 'Volver al paso 1',
+    consent: `Al enviar, usted acepta que ${brand.name} se comunique con usted sobre su solicitud. Una solicitud no reserva una fecha, y aquí no se cobra ningún pago.`,
+    pending: 'Este formulario está a la espera de su destinatario autorizado, así que por ahora no envía nada. Para solicitar su evaluación hoy, llame o envíe un mensaje al',
+    or: 'o escriba a',
+  },
+}[lang];
 ---
 <form class="eval" id={id} data-eval data-endpoint={brand.formEndpoint} method="post" action={hasEndpoint ? brand.formEndpoint : undefined} novalidate>
   <div class="eval-summary" data-summary role="alert" tabindex="-1" hidden></div>
 
   <div class="t-page-slide" data-page="1">
     <fieldset class="t-page" data-page-id="1">
-      <legend class="eval-step" tabindex="-1">Step 1 of 2: you and the service</legend>
+      <legend class="eval-step" tabindex="-1">{c.step1}</legend>
       <div class="eval-fields">
         <div class="field t-input-wrap">
-          <label for={`${id}-service`}>Service</label>
+          <label for={`${id}-service`}>{c.service}</label>
           <div class="t-input">
             <select id={`${id}-service`} name="service" required aria-describedby={`${id}-service-error`} data-validate>
-              <option value="" selected={!service}>Choose a service</option>
+              <option value="" selected={!service}>{c.chooseService}</option>
               {serviceOptions.map((g) => (
                 <optgroup label={g.group}>
                   {g.options.map((o) => <option value={o.key} selected={service === o.key}>{o.label}</option>)}
                 </optgroup>
               ))}
-              <option value="not-sure" selected={service === 'not-sure'}>Not sure yet</option>
+              <option value="not-sure" selected={service === 'not-sure'}>{c.notSure}</option>
             </select>
           </div>
           <p class="field-error" id={`${id}-service-error`}></p>
         </div>
         <div class="field t-input-wrap">
-          <label for={`${id}-name`}>Full name</label>
+          <label for={`${id}-name`}>{c.name}</label>
           <div class="t-input"><input id={`${id}-name`} type="text" name="name" autocomplete="name" required aria-describedby={`${id}-name-error`} data-validate /></div>
           <p class="field-error" id={`${id}-name-error`}></p>
         </div>
         <div class="field t-input-wrap">
-          <label for={`${id}-phone`}>Phone</label>
+          <label for={`${id}-phone`}>{c.phone}</label>
           <div class="t-input"><input id={`${id}-phone`} type="tel" name="phone" autocomplete="tel" inputmode="tel" required aria-describedby={`${id}-phone-error`} data-validate /></div>
           <p class="field-error" id={`${id}-phone-error`}></p>
         </div>
         <div class="field t-input-wrap">
-          <label for={`${id}-email`}>Email</label>
+          <label for={`${id}-email`}>{c.email}</label>
           <div class="t-input"><input id={`${id}-email`} type="email" name="email" autocomplete="email" required aria-describedby={`${id}-email-error`} data-validate /></div>
           <p class="field-error" id={`${id}-email-error`}></p>
         </div>
       </div>
-      <p class="needs-js eval-actions"><button class="btn" type="button" data-next>Continue</button></p>
-      <p class="hint needs-js">Next: your property and timing. Two more short questions, the rest optional.</p>
+      <p class="needs-js eval-actions"><button class="btn" type="button" data-next>{c.next}</button></p>
+      <p class="hint needs-js">{c.nextHint}</p>
     </fieldset>
 
     <fieldset class="t-page" data-page-id="2">
-      <legend class="eval-step" tabindex="-1">Step 2 of 2: the home</legend>
+      <legend class="eval-step" tabindex="-1">{c.step2}</legend>
       <div class="eval-fields">
         <div class="field t-input-wrap">
-          <label for={`${id}-area`}>ZIP code or neighborhood</label>
+          <label for={`${id}-area`}>{c.area}</label>
           <div class="t-input"><input id={`${id}-area`} type="text" name="area" autocomplete="postal-code" required aria-describedby={`${id}-area-error`} data-validate /></div>
           <p class="field-error" id={`${id}-area-error`}></p>
         </div>
         <div class="field">
-          <label for={`${id}-size`}>Approximate size <span class="hint">(optional)</span></label>
+          <label for={`${id}-size`}>{c.size} <span class="hint">{c.optional}</span></label>
           <select id={`${id}-size`} name="size">
-            <option value="">Choose a size</option>
+            <option value="">{c.chooseSize}</option>
             {sizeOptions.map((o) => <option>{o}</option>)}
           </select>
         </div>
         <fieldset class="field eval-surfaces">
-          <legend>Surfaces you care most about <span class="hint">(optional)</span></legend>
+          <legend>{c.surfaces} <span class="hint">{c.optional}</span></legend>
           <div class="eval-checks">
             {surfaceOptions.map((o) => (
               <label class="eval-check"><input type="checkbox" name="surfaces" value={o.key} /> <span>{o.label}</span></label>
@@ -72,37 +128,37 @@ const hasEndpoint = Boolean(brand.formEndpoint);
           </div>
         </fieldset>
         <div class="field">
-          <label for={`${id}-timing`}>Timing <span class="hint">(optional)</span></label>
+          <label for={`${id}-timing`}>{c.timing} <span class="hint">{c.optional}</span></label>
           <select id={`${id}-timing`} name="timing">
-            <option value="">Choose a timing</option>
+            <option value="">{c.chooseTiming}</option>
             {timingOptions.map((o) => <option>{o}</option>)}
           </select>
         </div>
         <div class="field">
-          <label for={`${id}-notes`}>Anything we should know <span class="hint">(optional)</span></label>
+          <label for={`${id}-notes`}>{c.notes} <span class="hint">{c.optional}</span></label>
           <textarea id={`${id}-notes`} name="notes" rows="3" aria-describedby={`${id}-notes-hint`}></textarea>
-          <p class="hint" id={`${id}-notes-hint`}>Please do not include gate codes, alarm details or payment information.</p>
+          <p class="hint" id={`${id}-notes-hint`}>{c.notesHint}</p>
         </div>
         <fieldset class="field eval-language">
           <legend>Reply language / Idioma de respuesta</legend>
           <div class="eval-checks">
-            <label class="eval-check"><input type="radio" name="language" value="en" checked /> <span>English</span></label>
-            <label class="eval-check"><input type="radio" name="language" value="es" lang="es" /> <span lang="es">Español</span></label>
+            <label class="eval-check"><input type="radio" name="language" value="en" checked={lang === 'en'} /> <span lang="en">English</span></label>
+            <label class="eval-check"><input type="radio" name="language" value="es" checked={lang === 'es'} /> <span lang="es">Español</span></label>
           </div>
         </fieldset>
       </div>
       <p class="eval-actions actions">
-        <button class="btn needs-send" type="submit" data-submit>{brand.cta}</button>
-        <button class="btn btn--line needs-js" type="button" data-back>Back to step 1</button>
+        <button class="btn needs-send" type="submit" data-submit>{ui[lang].cta}</button>
+        <button class="btn btn--line needs-js" type="button" data-back>{c.back}</button>
       </p>
-      <p class="hint">By submitting, you agree to be contacted by {brand.name} regarding your request. A request does not reserve a date, and no payment is collected here.</p>
+      <p class="hint">{c.consent}</p>
     </fieldset>
   </div>
 
   <div class="eval-result" data-result role="status" tabindex="-1">
     {!hasEndpoint && (
       <p class="eval-pending" data-pending-note>
-        This form is waiting for its authorized recipient, so for now it sends nothing. To request your evaluation today, call or text <a href={brand.phoneHref}>{brand.phone}</a> or write to <a href={`mailto:${brand.email}`}>{brand.email}</a>.
+        {c.pending} <a href={brand.phoneHref}>{brand.phone}</a> {c.or} <a href={`mailto:${brand.email}`}>{brand.email}</a>.
       </p>
     )}
   </div>

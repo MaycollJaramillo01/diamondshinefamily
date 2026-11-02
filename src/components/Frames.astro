@@ -1,15 +1,18 @@
 ---
 // Frames left honestly empty: the photograph waits for the client's written approval.
+import { langOf, ui } from '../lib/i18n';
+
 interface Props {
   groups: { name: string; line: string; frames: string[] }[];
 }
 const { groups } = Astro.props;
+const t = ui[langOf(Astro.currentLocale)].frames;
 ---
 <section class="section" aria-labelledby="frames-title">
   <div class="wrap">
     <div class="section-head">
-      <h2 id="frames-title">Project documentation</h2>
-      <p>We document each approved area before work begins, after it is completed and at property handoff. Photography is published only with client approval, so these frames stay empty until that is on file.</p>
+      <h2 id="frames-title">{t.title}</h2>
+      <p>{t.text}</p>
     </div>
     {groups.map((g) => (
       <div class="frames-group">
@@ -18,7 +21,7 @@ const { groups } = Astro.props;
         <div class="frames">
           {g.frames.map((f) => (
             <div class="frame-empty">
-              <p><strong>{f}</strong><br /><span class="small muted">Photo pending client approval</span></p>
+              <p><strong>{f}</strong><br /><span class="small muted">{t.pending}</span></p>
             </div>
           ))}
         </div>

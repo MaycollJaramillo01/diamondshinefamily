@@ -5,40 +5,69 @@ import Photo from '../../components/Photo.astro';
 import Sections from '../../components/Sections.astro';
 import Close from '../../components/Close.astro';
 import More from '../../components/More.astro';
-import { pic, illustrativeNote } from '../../data/pictures';
+import { pic } from '../../data/pictures';
 import { rich } from '../../lib/rich';
-import { stories } from '../../data/stories';
+import { data, langOf } from '../../lib/i18n';
 import type { Section } from '../../data/page-types';
 
-const integrity: Section[] = [
-  {
-    kind: 'limits',
-    title: 'Real stories, approved assets only',
-    items: [
-      'Real client photography, names, addresses and testimonials appear only with written approval from the homeowner or property professional.',
-      'We do not invent statistics, guarantees or outcomes. Each story reflects only the categories of service performed by Diamond Shine.',
-      'These stories exist to educate homeowners and property professionals, not to overstate results.',
-    ],
-    note: 'Stories are prepared as editorial templates, using generic, non-identifying wording. Our documentation confirms only the services performed or observed. It is not a home inspection, appraisal, engineering opinion or real-estate valuation.',
+const lang = langOf(Astro.currentLocale);
+const { stories, illustrativeNote } = data[lang];
+const copy = {
+  en: {
+    title: 'Home Care Case Studies in San Antonio, TX | Diamond Shine',
+    description: 'Written case studies of market-ready preparation, carpet restoration and move-out resets around San Antonio. Real photographs appear only with client approval.',
+    h1: 'Our work, in writing, around San&nbsp;Antonio.',
+    lead: 'Case studies of property care told as written records rather than a gallery. Additional client-approved stories are added as photography is authorized.',
+    caption: 'Illustrative image, not a client home.',
+    cases: 'Three cases, and where each stands',
+    more: 'Read the full record',
+    closeTitle: 'Prepare your next chapter',
+    closeText: 'Request an evaluation and receive personalized recommendations for your home.',
+    integrity: [
+      {
+        kind: 'limits',
+        title: 'Real stories, approved assets only',
+        items: [
+          'Real client photography, names, addresses and testimonials appear only with written approval from the homeowner or property professional.',
+          'We do not invent statistics, guarantees or outcomes. Each story reflects only the categories of service performed by Diamond Shine.',
+          'These stories exist to educate homeowners and property professionals, not to overstate results.',
+        ],
+        note: 'Stories are prepared as editorial templates, using generic, non-identifying wording. Our documentation confirms only the services performed or observed. It is not a home inspection, appraisal, engineering opinion or real-estate valuation.',
+      },
+    ] as Section[],
   },
-];
+  es: {
+    title: 'Casos de cuidado del hogar en San Antonio, TX | Diamond Shine',
+    description: 'Casos escritos de preparación para la venta, restauración de alfombras y limpiezas de salida en la zona de San Antonio. Las fotografías reales aparecen solo con la aprobación del cliente.',
+    h1: 'Nuestro trabajo, por escrito, en la zona de San&nbsp;Antonio.',
+    lead: 'Casos de cuidado de propiedades contados como registros escritos y no como una galería. Se añaden más historias aprobadas por los clientes a medida que se autorizan las fotografías.',
+    caption: 'Imagen ilustrativa, no es la casa de un cliente.',
+    cases: 'Tres casos, y en qué punto está cada uno',
+    more: 'Leer el caso completo',
+    closeTitle: 'Prepare su próximo capítulo',
+    closeText: 'Solicite una evaluación y reciba recomendaciones personalizadas para su casa.',
+    integrity: [
+      {
+        kind: 'limits',
+        title: 'Historias reales, solo con material aprobado',
+        items: [
+          'Las fotografías, los nombres, las direcciones y los testimonios reales de clientes aparecen solo con la aprobación por escrito del propietario o del profesional inmobiliario.',
+          'No inventamos estadísticas, garantías ni resultados. Cada historia refleja solo las categorías de servicio que realizó Diamond Shine.',
+          'Estas historias existen para orientar a propietarios y profesionales inmobiliarios, no para exagerar resultados.',
+        ],
+        note: 'Las historias se preparan como plantillas editoriales, con una redacción genérica que no identifica a nadie. Nuestra documentación confirma solo los servicios realizados u observados. No es una inspección de vivienda, un avalúo, una opinión de ingeniería ni una valuación inmobiliaria.',
+      },
+    ] as Section[],
+  },
+};
+const c = copy[lang];
 ---
-<Base
-  title="Home Care Case Studies in San Antonio, TX | Diamond Shine"
-  description="Written case studies of market-ready preparation, carpet restoration and move-out resets around San Antonio. Real photographs appear only with client approval."
->
-  <PageHero
-    h1="Our work, in writing, around San&nbsp;Antonio."
-    lead="Case studies of property care told as written records rather than a gallery. Additional client-approved stories are added as photography is authorized."
-    main="limestone-fireplace.jpeg"
-    caption="Illustrative image, not a client home."
-    service="market-ready"
-    review="crystal"
-  />
+<Base title={c.title} description={c.description}>
+  <PageHero h1={c.h1} lead={c.lead} main="limestone-fireplace.jpeg" caption={c.caption} service="market-ready" review="crystal" />
 
   <section class="section" aria-labelledby="st-title">
     <div class="wrap">
-      <div class="section-head"><h2 id="st-title">Three cases, and where each stands</h2></div>
+      <div class="section-head"><h2 id="st-title">{c.cases}</h2></div>
       <div class="cards">
         {stories.map((s) => (
           <a class="card t-learn" href={`/transformation-stories/${s.slug}`}>
@@ -47,7 +76,7 @@ const integrity: Section[] = [
               <h3 set:html={s.h1} />
               <span>{s.summary}</span>
               <span class="small muted" set:html={rich(s.statusLine)} />
-              <More label="Read the full record" />
+              <More label={c.more} />
             </div>
           </a>
         ))}
@@ -55,12 +84,7 @@ const integrity: Section[] = [
     </div>
   </section>
 
-  <Sections sections={integrity} startSoft />
+  <Sections sections={c.integrity} startSoft />
 
-  <Close
-    title="Prepare your next chapter"
-    text="Request an evaluation and receive personalized recommendations for your home."
-    picture="stone-kitchen.jpg"
-    service="market-ready"
-  />
+  <Close title={c.closeTitle} text={c.closeText} picture="stone-kitchen.jpg" service="market-ready" />
 </Base>

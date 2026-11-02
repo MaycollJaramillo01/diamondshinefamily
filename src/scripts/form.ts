@@ -4,6 +4,23 @@ import { serviceKeys } from '../data/form';
 
 type Field = HTMLInputElement | HTMLSelectElement;
 
+// The page's language decides the language of every message the form writes.
+const lang = document.documentElement.lang === 'es' ? 'es' : 'en';
+const said = {
+  en: {
+    or: ' or write to ',
+    pending: 'Nothing was sent. This form is waiting for its authorized recipient. What you typed is still here. To request your evaluation today, call or text ',
+    failure: 'Your request did not go through, and what you typed is still here. Please try again, or call or text ',
+    success: 'Thank you. Your request reached the family. We will follow up with you; a request does not reserve a date.',
+  },
+  es: {
+    or: ' o escriba a ',
+    pending: 'No se envió nada. Este formulario está a la espera de su destinatario autorizado. Lo que escribió sigue aquí. Para solicitar su evaluación hoy, llame o envíe un mensaje al ',
+    failure: 'Su solicitud no se pudo enviar, y lo que escribió sigue aquí. Inténtelo de nuevo, o llame o envíe un mensaje al ',
+    success: 'Gracias. Su solicitud llegó a la familia. Nos comunicaremos con usted; una solicitud no reserva una fecha.',
+  },
+}[lang];
+
 function setError(field: Field, message: string) {
   field.setAttribute('aria-invalid', message ? 'true' : 'false');
   const slot = document.getElementById(`${field.id}-error`);
@@ -21,7 +38,7 @@ function shake(field: Field) {
 function checkFields(fields: Field[]) {
   const bad: { field: Field; message: string }[] = [];
   for (const field of fields) {
-    const message = fieldError(field.name, field.value);
+    const message = fieldError(field.name, field.value, lang);
     setError(field, message);
     if (message) {
       bad.push({ field, message });
@@ -81,10 +98,10 @@ function initForm(form: HTMLFormElement) {
   // Validate when a field is left, and again as it is fixed once it has shown an error.
   for (const field of form.querySelectorAll<Field>('[data-validate]')) {
     field.addEventListener('blur', () => {
-      if (field.value.trim()) setError(field, fieldError(field.name, field.value));
+      if (field.value.trim()) setError(field, fieldError(field.name, field.value, lang));
     });
     field.addEventListener('input', () => {
-      if (field.getAttribute('aria-invalid') === 'true') setError(field, fieldError(field.name, field.value));
+      if (field.getAttribute('aria-invalid') === 'true') setError(field, fieldError(field.name, field.value, lang));
     });
   }
 
@@ -132,13 +149,13 @@ function contactLinks(parent: HTMLElement) {
   const email = document.createElement('a');
   email.href = 'mailto:hello@diamondshinefamily.com';
   email.textContent = 'hello@diamondshinefamily.com';
-  parent.append(phone, ' or write to ', email, '.');
+  parent.append(phone, said.or, email, '.');
 }
 
 function pendingMessage() {
   const p = document.createElement('p');
   p.className = 'eval-pending';
-  p.textContent = 'Nothing was sent. This form is waiting for its authorized recipient. What you typed is still here. To request your evaluation today, call or text ';
+  p.textContent = said.pending;
   contactLinks(p);
   return p;
 }
@@ -146,7 +163,7 @@ function pendingMessage() {
 function failureMessage() {
   const p = document.createElement('p');
   p.className = 'eval-pending';
-  p.textContent = 'Your request did not go through, and what you typed is still here. Please try again, or call or text ';
+  p.textContent = said.failure;
   contactLinks(p);
   return p;
 }
@@ -156,7 +173,7 @@ function successMessage() {
   box.className = 'is-success';
   box.innerHTML = '<span class="t-success-check" data-state="out" aria-hidden="true"><svg viewBox="0 0 48 48" width="40" height="40" fill="none" stroke="currentColor" stroke-width="3"><path d="M10 25l9 9 19-20" stroke-linecap="square"/></svg></span>';
   const p = document.createElement('p');
-  p.textContent = 'Thank you. Your request reached the family. We will follow up with you; a request does not reserve a date.';
+  p.textContent = said.success;
   box.append(p);
   return box;
 }

@@ -6,38 +6,115 @@ import Facets from '../components/Facets.astro';
 import { pic } from '../data/pictures';
 import { rich } from '../lib/rich';
 import { brand, areas } from '../data/brand';
-import { serviceGroups } from '../data/nav';
-import { stories } from '../data/stories';
-import { people } from '../data/people';
-import { reviews } from '../data/reviews';
+import { data, langOf, ui } from '../lib/i18n';
 
-// Every surface has its own method: three of them, side by side, at one size.
-const surfaces = [
-  { name: 'Stone and tile', text: 'Natural stone, tile and the grout between, each cleaned with what it can take.', pic: 'gloved-hand-stone.jpg' },
-  { name: 'Wood', text: 'Cabinetry, hardwood and fine furniture, cleaned to suit the finish.', pic: 'white-glove-detail.webp' },
-  { name: 'Walls and trim', text: 'Interior painting, cut in by hand along every line of trim.', pic: 'painting-hand.jpg' },
-];
+const lang = langOf(Astro.currentLocale);
+const t = ui[lang];
+const { serviceGroups, stories, people, reviews } = data[lang];
 
-// The service card: every service by group, with a price only where the company publishes one.
-const prices: Record<string, string> = {
-  '/floor-ritual': '+$25 to $35 a visit',
-  '/white-glove-society': '$495 a year',
+const copy = {
+  en: {
+    title: `Home Preservation & Care in San Antonio, TX | ${brand.name}`,
+    description: 'Family-owned home preservation and care in San Antonio since 2017: specialized cleaning, surface restoration and recurring care for private residences. Request a Home Evaluation.',
+    line: 'Home preservation and care for San Antonio’s finest homes, from the Leal family since 2017.',
+    numbers: 'Diamond Shine in numbers',
+    homes: 'Homes served [confirm:homes-8000]',
+    since: 'Family-owned since',
+    towns: 'Communities we serve',
+    method: 'Every surface, its own method.',
+    methodLead: 'One wrong product can dull a stone floor for good. We match the method to the material and review it with you, area by area.',
+    // Every surface has its own method: three of them, side by side, at one size.
+    surfaces: [
+      { name: 'Stone and tile', text: 'Natural stone, tile and the grout between, each cleaned with what it can take.', pic: 'gloved-hand-stone.jpg' },
+      { name: 'Wood', text: 'Cabinetry, hardwood and fine furniture, cleaned to suit the finish.', pic: 'white-glove-detail.webp' },
+      { name: 'Walls and trim', text: 'Interior painting, cut in by hand along every line of trim.', pic: 'painting-hand.jpg' },
+    ],
+    care: 'The care we offer',
+    careLead: 'Every service is quoted in writing before work begins.',
+    // The service card: a price only where the company publishes one.
+    prices: { '/floor-ritual': '+$25 to $35 a visit', '/white-glove-society': '$495 a year' } as Record<string, string>,
+    walk: 'The walkthrough',
+    walkLead: 'Every Home Evaluation is a walk through the house with you. Walk yours here, and mark each area the way we would.',
+    // The walkthrough of a Home Evaluation, room by room.
+    rooms: [
+      { name: 'The entrance', text: 'Stone and glass at the door, the threshold, and the floor everyone walks in on.', pic: 'entry.jpeg' },
+      { name: 'The living room', text: 'Wood, stone, the fireplace and the details a room is judged by.', pic: 'limestone-fireplace.jpeg' },
+      { name: 'The kitchen', text: 'Stone counters, cabinet fronts, appliances and the grout between the tiles.', pic: 'stone-kitchen.jpg' },
+      { name: 'The floors', text: 'Tile, grout, hardwood and natural stone, each with its own method.', pic: 'travertine.jpg' },
+      { name: 'The carpeted rooms', text: 'Traffic lanes, pet areas and the rooms used most, and what can be restored.', pic: 'carpet-room.webp' },
+      { name: 'The bedrooms', text: 'Linens, beds and the rooms a guest notices first.', pic: 'bed-presentation.jpg' },
+    ],
+    marks: ['Maintain', 'Restore', 'Priority'],
+    mark: 'Mark',
+    plan: 'Your plan',
+    planText: 'After the walkthrough you receive a written plan in plain English, every area marked Maintain, Restore or Priority. Every service then starts with a signed agreement covering scope, price, payment terms and responsibilities.',
+    planEmpty: 'Mark a room above and it appears here.',
+    planNote: 'No obligation. A request does not reserve a date or take payment.',
+    notesIntro: 'From the walkthrough on the home page.',
+    family: 'The Leal family',
+    familyLead: 'Lilian and Sergio Leal founded Diamond Shine in San Antonio in 2017, and Emilio Leal leads it today. The family you speak with is the family accountable for the work.',
+    voice: 'Sergio Leal, in his own words',
+    work: 'Our work, in writing',
+    workLead: 'Each case record sets out the home and the plan of care, in plain words.',
+    workNote: 'Illustrative photograph',
+    allCases: 'Every case record',
+    allReviews: 'Every review, in full',
+    visit: 'Start with a walkthrough',
+    visitAreas: 'Homes in San Antonio, Alamo Heights, Terrell Hills, Olmos Park, Boerne and [nearby communities](/service-areas).',
+  },
+  es: {
+    title: `Preservación y Cuidado del Hogar en San Antonio, TX | ${brand.name}`,
+    description: 'Preservación y cuidado del hogar en San Antonio, en manos de una familia desde 2017: limpieza especializada, restauración de superficies y cuidado recurrente para residencias privadas. Solicite una Evaluación del Hogar.',
+    line: 'Preservación y cuidado del hogar para las mejores casas de San Antonio, de la familia Leal desde 2017.',
+    numbers: 'Diamond Shine en cifras',
+    homes: 'Hogares atendidos [confirm:homes-8000]',
+    since: 'Empresa familiar desde',
+    towns: 'Comunidades que atendemos',
+    method: 'Cada superficie, su propio método.',
+    methodLead: 'Un producto equivocado puede opacar un piso de piedra para siempre. Elegimos el método según el material y lo revisamos con usted, área por área.',
+    surfaces: [
+      { name: 'Piedra y azulejo', text: 'La piedra natural, el azulejo y las juntas entre ellos, cada uno limpiado con lo que puede soportar.', pic: 'gloved-hand-stone.jpg' },
+      { name: 'Madera', text: 'Gabinetes, pisos de madera y muebles finos, limpiados según su acabado.', pic: 'white-glove-detail.webp' },
+      { name: 'Paredes y molduras', text: 'Pintura interior, perfilada a mano a lo largo de cada moldura.', pic: 'painting-hand.jpg' },
+    ],
+    care: 'Los cuidados que ofrecemos',
+    careLead: 'Cada servicio se cotiza por escrito antes de empezar el trabajo.',
+    prices: { '/floor-ritual': '+$25 a $35 por visita', '/white-glove-society': '$495 al año' } as Record<string, string>,
+    walk: 'El recorrido',
+    walkLead: 'Cada Evaluación del Hogar es un recorrido por la casa con usted. Recorra la suya aquí y marque cada área como lo haríamos nosotros.',
+    rooms: [
+      { name: 'La entrada', text: 'La piedra y el vidrio de la puerta, el umbral y el piso que todos pisan al entrar.', pic: 'entry.jpeg' },
+      { name: 'La sala', text: 'La madera, la piedra, la chimenea y los detalles por los que se juzga una habitación.', pic: 'limestone-fireplace.jpeg' },
+      { name: 'La cocina', text: 'Encimeras de piedra, frentes de gabinetes, electrodomésticos y las juntas entre los azulejos.', pic: 'stone-kitchen.jpg' },
+      { name: 'Los pisos', text: 'Azulejo, juntas, madera y piedra natural, cada uno con su propio método.', pic: 'travertine.jpg' },
+      { name: 'Las habitaciones alfombradas', text: 'Zonas de paso, áreas de mascotas y las habitaciones más usadas, y lo que se puede restaurar.', pic: 'carpet-room.webp' },
+      { name: 'Las recámaras', text: 'La ropa de cama, las camas y las habitaciones que un invitado nota primero.', pic: 'bed-presentation.jpg' },
+    ],
+    marks: ['Mantener', 'Restaurar', 'Prioridad'],
+    mark: 'Marcar',
+    plan: 'Su plan',
+    planText: 'Después del recorrido recibe un plan por escrito, en palabras claras, con cada área marcada como Mantener, Restaurar o Prioridad. Cada servicio empieza después con un acuerdo firmado que cubre el alcance, el precio, las condiciones de pago y las responsabilidades.',
+    planEmpty: 'Marque una habitación arriba y aparecerá aquí.',
+    planNote: 'Sin compromiso. Una solicitud no reserva una fecha ni cobra ningún pago.',
+    notesIntro: 'Del recorrido en la página de inicio.',
+    family: 'La familia Leal',
+    familyLead: 'Lilian y Sergio Leal fundaron Diamond Shine en San Antonio en 2017, y hoy Emilio Leal la dirige. La familia con la que usted habla es la familia que responde por el trabajo.',
+    voice: 'Sergio Leal, en sus propias palabras',
+    work: 'Nuestro trabajo, por escrito',
+    workLead: 'Cada caso describe la casa y el plan de cuidado, en palabras claras.',
+    workNote: 'Fotografía ilustrativa',
+    allCases: 'Todos los casos',
+    allReviews: 'Todas las reseñas, completas',
+    visit: 'Empiece con un recorrido',
+    visitAreas: 'Casas en San Antonio, Alamo Heights, Terrell Hills, Olmos Park, Boerne y [comunidades cercanas](/service-areas).',
+  },
 };
+const c = copy[lang];
+
 const menu = serviceGroups.map((g) => ({
   ...g,
-  items: g.links.map((l) => ({ ...l, price: prices[l.href] })),
+  items: g.links.map((l) => ({ ...l, price: c.prices[l.href] })),
 }));
-
-// The walkthrough of a Home Evaluation, room by room.
-const rooms = [
-  { name: 'The entrance', text: 'Stone and glass at the door, the threshold, and the floor everyone walks in on.', pic: 'entry.jpeg' },
-  { name: 'The living room', text: 'Wood, stone, the fireplace and the details a room is judged by.', pic: 'limestone-fireplace.jpeg' },
-  { name: 'The kitchen', text: 'Stone counters, cabinet fronts, appliances and the grout between the tiles.', pic: 'stone-kitchen.jpg' },
-  { name: 'The floors', text: 'Tile, grout, hardwood and natural stone, each with its own method.', pic: 'travertine.jpg' },
-  { name: 'The carpeted rooms', text: 'Traffic lanes, pet areas and the rooms used most, and what can be restored.', pic: 'carpet-room.webp' },
-  { name: 'The bedrooms', text: 'Linens, beds and the rooms a guest notices first.', pic: 'bed-presentation.jpg' },
-];
-const marks = ['Maintain', 'Restore', 'Priority'];
 
 // The numbers band: counted from the service-area list, so it follows that list.
 const towns = areas.flatMap((a) => a.towns).length;
@@ -45,11 +122,7 @@ const towns = areas.flatMap((a) => a.towns).length;
 const sergio = people.find((p) => p.slug === 'sergio-leal')!;
 const remark = reviews.find((r) => r.id === 'brittney')!;
 ---
-<Base
-  title={`Home Preservation & Care in San Antonio, TX | ${brand.name}`}
-  description="Family-owned home preservation and care in San Antonio since 2017: specialized cleaning, surface restoration and recurring care for private residences. Request a Home Evaluation."
-  overlay
->
+<Base title={c.title} description={c.description} overlay>
   <section class="hero" aria-labelledby="hero-name">
     <div class="hero-media">
       <Photo class="hero-shot" {...pic('hero-home.jpg')} show={1600} sizes="100vw" eager />
@@ -58,27 +131,27 @@ const remark = reviews.find((r) => r.id === 'brittney')!;
     </div>
     <div class="wrap hero-foot t-stagger">
       <h1 id="hero-name" class="hero-name t-stagger-line"><span>Diamond</span> <span>Shine</span></h1>
-      <p class="hero-line t-stagger-line t-stagger-line--2">Home preservation and care for San&nbsp;Antonio’s finest homes, from the Leal family since&nbsp;2017.</p>
+      <p class="hero-line t-stagger-line t-stagger-line--2">{c.line}</p>
       <div class="t-stagger-line t-stagger-line--3"><Cta class="btn--paper" /></div>
     </div>
   </section>
 
-  <section class="numbers" aria-label="Diamond Shine in numbers">
+  <section class="numbers" aria-label={c.numbers}>
     <dl class="wrap numbers-in">
-      <div><dt set:html={rich('Homes served [confirm:homes-8000]')} /><dd>8,000+</dd></div>
-      <div><dt>Family-owned since</dt><dd>{brand.founded}</dd></div>
-      <div><dt>Communities we serve</dt><dd>{towns}</dd></div>
+      <div><dt set:html={rich(c.homes)} /><dd>8,000+</dd></div>
+      <div><dt>{c.since}</dt><dd>{brand.founded}</dd></div>
+      <div><dt>{c.towns}</dt><dd>{towns}</dd></div>
     </dl>
   </section>
 
   <section class="section" aria-labelledby="method-title">
     <div class="wrap">
       <header class="center-head">
-        <h2 id="method-title">Every surface, its own method.</h2>
-        <p class="lead">One wrong product can dull a stone floor for good. We match the method to the material and review it with you, area by area.</p>
+        <h2 id="method-title">{c.method}</h2>
+        <p class="lead">{c.methodLead}</p>
       </header>
       <ul class="trio">
-        {surfaces.map((s) => (
+        {c.surfaces.map((s) => (
           <li class="surface">
             <Photo {...pic(s.pic)} ratio={0.8} show={440} sizes="(min-width: 641px) 31vw, 100vw" />
             <h3>{s.name}</h3>
@@ -95,8 +168,8 @@ const remark = reviews.find((r) => r.id === 'brittney')!;
         <Facets />
         <div class="sheet-in">
           <header class="center-head">
-            <h2 id="care-title">The care we offer</h2>
-            <p class="lead">Every service is quoted in writing before work begins.</p>
+            <h2 id="care-title">{c.care}</h2>
+            <p class="lead">{c.careLead}</p>
           </header>
           <div class="sheet-grid">
             {menu.map((g) => (
@@ -111,39 +184,39 @@ const remark = reviews.find((r) => r.id === 'brittney')!;
               </div>
             ))}
           </div>
-          <p class="sheet-hours">{brand.hours.short} · Call or text <a href={brand.phoneHref}>{brand.phone}</a></p>
+          <p class="sheet-hours">{t.hours.short} · {t.callOrText} <a href={brand.phoneHref}>{brand.phone}</a></p>
         </div>
         <Facets flip />
       </div>
     </div>
   </section>
 
-  <section class="section" aria-labelledby="walk-title" data-walk>
+  <section class="section" aria-labelledby="walk-title" data-walk data-notes-intro={c.notesIntro}>
     <div class="wrap">
       <header class="center-head">
-        <h2 id="walk-title">The walkthrough</h2>
-        <p class="lead">Every Home Evaluation is a walk through the house with you. Walk yours here, and mark each area the way we would.</p>
+        <h2 id="walk-title">{c.walk}</h2>
+        <p class="lead">{c.walkLead}</p>
       </header>
       <ol class="rooms">
-        {rooms.map((r, i) => (
+        {c.rooms.map((r, i) => (
           <li class="room">
             <Photo {...pic(r.pic)} ratio={4 / 3} show={460} sizes="(min-width: 1000px) 31vw, (min-width: 641px) 47vw, 100vw" />
             <div class="room-body">
               <h3>{r.name}</h3>
               <p>{r.text}</p>
-              <div class="mark" role="group" aria-label={`Mark ${r.name.toLowerCase()}`} data-room={r.name} data-index={i}>
-                {marks.map((m) => <button type="button" aria-pressed="false" data-mark={m}>{m}</button>)}
+              <div class="mark" role="group" aria-label={`${c.mark} ${r.name.toLowerCase()}`} data-room={r.name} data-index={i}>
+                {c.marks.map((m) => <button type="button" aria-pressed="false" data-mark={m}>{m}</button>)}
               </div>
             </div>
           </li>
         ))}
       </ol>
       <div class="plan">
-        <h3>Your plan</h3>
-        <p>After the walkthrough you receive a written plan in plain English, every area marked Maintain, Restore or Priority. Every service then starts with a signed agreement covering scope, price, payment terms and responsibilities.</p>
-        <ul class="plan-list" data-plan aria-live="polite"><li class="plan-empty">Mark a room above and it appears here.</li></ul>
-        <a class="btn btn--paper" data-plan-link data-cta href="/home-evaluation">{brand.cta}</a>
-        <p class="plan-note">No obligation. A request does not reserve a date or take payment.</p>
+        <h3>{c.plan}</h3>
+        <p>{c.planText}</p>
+        <ul class="plan-list" data-plan aria-live="polite"><li class="plan-empty">{c.planEmpty}</li></ul>
+        <a class="btn btn--paper" data-plan-link data-cta href="/home-evaluation">{t.cta}</a>
+        <p class="plan-note">{c.planNote}</p>
       </div>
     </div>
   </section>
@@ -151,8 +224,8 @@ const remark = reviews.find((r) => r.id === 'brittney')!;
   <section class="section section--soft" aria-labelledby="family-title">
     <div class="wrap">
       <header class="center-head">
-        <h2 id="family-title">The Leal family</h2>
-        <p class="lead">Lilian and Sergio Leal founded Diamond Shine in San&nbsp;Antonio in 2017, and Emilio Leal leads it today. The family you speak with is the family accountable for the work.</p>
+        <h2 id="family-title">{c.family}</h2>
+        <p class="lead">{c.familyLead}</p>
       </header>
       <ul class="trio family">
         {people.map((p) => (
@@ -168,7 +241,7 @@ const remark = reviews.find((r) => r.id === 'brittney')!;
     </div>
   </section>
 
-  <section class="section voice" aria-label="Sergio Leal, in his own words">
+  <section class="section voice" aria-label={c.voice}>
     <div class="wrap">
       <figure class="voice-quote">
         <blockquote>&ldquo;{sergio.quote}&rdquo;</blockquote>
@@ -180,8 +253,8 @@ const remark = reviews.find((r) => r.id === 'brittney')!;
   <section class="section" aria-labelledby="work-title">
     <div class="wrap">
       <header class="center-head">
-        <h2 id="work-title">Our work, in writing</h2>
-        <p class="lead">Each case record sets out the home and the plan of care, in plain words.</p>
+        <h2 id="work-title">{c.work}</h2>
+        <p class="lead">{c.workLead}</p>
       </header>
       <ul class="trio">
         {stories.map((s) => (
@@ -190,16 +263,16 @@ const remark = reviews.find((r) => r.id === 'brittney')!;
               <Photo {...pic(s.pic)} ratio={0.8} show={440} sizes="(min-width: 641px) 31vw, 100vw" />
               <span class="story-name" set:html={s.h1} />
               <span class="story-text">{s.summary}</span>
-              <span class="story-note">Illustrative photograph</span>
+              <span class="story-note">{c.workNote}</span>
             </a>
           </li>
         ))}
       </ul>
       <figure class="remark">
         <blockquote>&ldquo;{remark.excerpt}&rdquo;</blockquote>
-        <figcaption>{remark.name}, {remark.source}</figcaption>
+        <figcaption>{remark.name}, {remark.source}{t.translated && ` (${t.translated})`}</figcaption>
       </figure>
-      <p class="center-actions"><a class="btn btn--line" href="/transformation-stories">Every case record</a> <a class="btn btn--line" href="/reviews">Every review, in full</a></p>
+      <p class="center-actions"><a class="btn btn--line" href="/transformation-stories">{c.allCases}</a> <a class="btn btn--line" href="/reviews">{c.allReviews}</a></p>
     </div>
   </section>
 
@@ -207,11 +280,11 @@ const remark = reviews.find((r) => r.id === 'brittney')!;
     <Photo class="visit-photo" {...pic('arrival-entrance.webp')} show={1600} sizes="100vw" />
     <div class="wrap">
       <div class="visit-card">
-        <h2 id="visit-title">Start with a walkthrough</h2>
-        <p>Homes in San&nbsp;Antonio, Alamo Heights, Terrell Hills, Olmos Park, Boerne and <a href="/service-areas">nearby communities</a>.</p>
-        <p>{brand.hours.short}<br />{brand.hours.closed}</p>
+        <h2 id="visit-title">{c.visit}</h2>
+        <p set:html={rich(c.visitAreas)} />
+        <p>{t.hours.short}<br />{t.hours.closed}</p>
         <p class="visit-status" data-office-status></p>
-        <p class="visit-lines"><a href={brand.phoneHref}>Call or text {brand.phone}</a><a href={`mailto:${brand.email}`}>{brand.email}</a></p>
+        <p class="visit-lines"><a href={brand.phoneHref}>{t.callOrText} {brand.phone}</a><a href={`mailto:${brand.email}`}>{brand.email}</a></p>
         <Cta />
       </div>
     </div>
@@ -219,11 +292,12 @@ const remark = reviews.find((r) => r.id === 'brittney')!;
 </Base>
 
 <script>
-  // The walkthrough: the visitor's own marks, listed as a plan and carried into the request.
+  // The walkthrough: the visitor's own marks, listed as a plan and carried into the request, in the page's language.
   const root = document.querySelector<HTMLElement>('[data-walk]');
   if (root) {
     const plan = root.querySelector<HTMLElement>('[data-plan]')!;
     const link = root.querySelector<HTMLAnchorElement>('[data-plan-link]')!;
+    const form = link.getAttribute('href')!;
     const empty = plan.firstElementChild!;
     const chosen = new Map<number, [string, string]>();
 
@@ -252,7 +326,7 @@ const remark = reviews.find((r) => r.id === 'brittney')!;
           : [empty]),
       );
       const notes = lines.map(([room, mark]) => `${room}: ${mark}`).join('; ');
-      link.href = notes ? `/home-evaluation?notes=${encodeURIComponent(`From the walkthrough on the home page. ${notes}.`)}` : '/home-evaluation';
+      link.href = notes ? `${form}?notes=${encodeURIComponent(`${root.dataset.notesIntro} ${notes}.`)}` : form;
     });
   }
 </script>

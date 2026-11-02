@@ -3,15 +3,33 @@ import Base from '../../layouts/Base.astro';
 import Photo from '../../components/Photo.astro';
 import { rich } from '../../lib/rich';
 import { brand } from '../../data/brand';
-import { people } from '../../data/people';
-import type { Person } from '../../data/people';
+import { people as everyone } from '../../data/people';
+import { data, langOf, pathIn, ui } from '../../lib/i18n';
 
 export function getStaticPaths() {
-  return people.map((person) => ({ params: { person: person.slug }, props: { person } }));
+  return everyone.map((person) => ({ params: { person: person.slug } }));
 }
 
-const { person } = Astro.props as { person: Person };
+const lang = langOf(Astro.currentLocale);
+const { people } = data[lang];
+const person = people.find((p) => p.slug === Astro.params.person)!;
 const others = people.filter((p) => p.slug !== person.slug);
+const c = {
+  en: {
+    description: `${person.intro} ${person.name} is ${person.role} of Diamond Shine, a family-owned San Antonio company.`,
+    family: 'The family',
+    portrait: 'Portrait as published today. [confirm:portraits]',
+    glance: 'At a glance',
+    meet: 'Meet the family',
+  },
+  es: {
+    description: `${person.intro} ${person.name} es ${person.role.toLowerCase()} de Diamond Shine, una empresa familiar de San Antonio.`,
+    family: 'La familia',
+    portrait: 'Retrato tal como se publica hoy. [confirm:portraits]',
+    glance: 'En resumen',
+    meet: 'Conozca a la familia',
+  },
+}[lang];
 const schema = [
   {
     '@context': 'https://schema.org',
@@ -19,22 +37,22 @@ const schema = [
     name: person.name,
     jobTitle: person.role,
     worksFor: { '@id': new URL('/#business', Astro.site).href },
-    url: new URL(`/people/${person.slug}`, Astro.site).href,
+    url: new URL(pathIn(`/people/${person.slug}`, lang), Astro.site).href,
   },
 ];
 ---
-<Base title={`${person.name}, ${person.role} | Diamond Shine, San Antonio`} description={`${person.intro} ${person.name} is ${person.role} of Diamond Shine, a family-owned San Antonio company.`} schema={schema}>
+<Base title={`${person.name}, ${person.role} | Diamond Shine, San Antonio`} description={c.description} schema={schema}>
   <section class="page-hero">
     <div class="wrap split">
       <div class="page-hero-copy t-stagger">
-        <nav class="crumb t-stagger-line" aria-label="You are here"><a href="/about">The family</a> / {person.name}</nav>
+        <nav class="crumb t-stagger-line" aria-label={ui[lang].youAreHere}><a href="/about">{c.family}</a> / {person.name}</nav>
         <h1 class="t-stagger-line t-stagger-line--2">{person.name}</h1>
         <p class="lead t-stagger-line t-stagger-line--3">{person.role}, {brand.legalEntity}</p>
         <p class="muted t-stagger-line t-stagger-line--4">{person.also}</p>
         <p class="lead t-stagger-line t-stagger-line--5">{person.statement}</p>
         <p class="t-stagger-line t-stagger-line--6">{person.intro}</p>
       </div>
-      <Photo class="portrait person-portrait" src={person.portrait} alt={person.alt} ratio={0.8} show={440} position="top" sizes="(min-width: 900px) 440px, 100vw" eager caption={rich('Portrait as published today. [confirm:portraits]')} />
+      <Photo class="portrait person-portrait" src={person.portrait} alt={person.alt} ratio={0.8} show={440} position="top" sizes="(min-width: 900px) 440px, 100vw" eager caption={rich(c.portrait)} />
     </div>
   </section>
 
@@ -42,10 +60,10 @@ const schema = [
     <div class="wrap narrow">
       <figure class="quote-big person-quote"><blockquote>&ldquo;{person.quote}&rdquo;</blockquote></figure>
       <div class="prose">
-        {person.chapters.map((c) => (
+        {person.chapters.map((ch) => (
           <>
-            <h2>{c.title}</h2>
-            {c.paragraphs.map((t) => <p set:html={rich(t)} />)}
+            <h2>{ch.title}</h2>
+            {ch.paragraphs.map((t) => <p set:html={rich(t)} />)}
           </>
         ))}
       </div>
@@ -55,7 +73,7 @@ const schema = [
   <section class="section section--soft" aria-labelledby="p-glance-title">
     <div class="wrap split split--top">
       <div class="stack">
-        <h2 id="p-glance-title">At a glance</h2>
+        <h2 id="p-glance-title">{c.glance}</h2>
         <ul class="checks">
           {person.glance.map((g) => <li>{g}</li>)}
         </ul>
@@ -68,7 +86,7 @@ const schema = [
 
   <section class="section" aria-labelledby="p-others-title">
     <div class="wrap">
-      <div class="section-head"><h2 id="p-others-title">Meet the family</h2></div>
+      <div class="section-head"><h2 id="p-others-title">{c.meet}</h2></div>
       <div class="cards">
         {others.map((o) => (
           <a class="card" href={`/people/${o.slug}`}>

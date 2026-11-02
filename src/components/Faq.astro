@@ -1,6 +1,7 @@
 ---
 // Questions on native <details>: readable with no script, searchable, and all of it in the first HTML.
 import { rich } from '../lib/rich';
+import { langOf, ui } from '../lib/i18n';
 
 interface Props {
   items: { q: string; a: string }[];
@@ -8,7 +9,7 @@ interface Props {
   id?: string;
   soft?: boolean;
 }
-const { items, title = 'Questions, answered plainly', id, soft = false } = Astro.props;
+const { items, title = ui[langOf(Astro.currentLocale)].questions, id, soft = false } = Astro.props;
 ---
 <section class:list={['section', { 'section--soft': soft }]} id={id}>
   <div class="wrap">
