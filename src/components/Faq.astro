@@ -1,0 +1,25 @@
+---
+// Questions on native <details>: readable with no script, searchable, and all of it in the first HTML.
+import { rich } from '../lib/rich';
+
+interface Props {
+  items: { q: string; a: string }[];
+  title?: string;
+  id?: string;
+  soft?: boolean;
+}
+const { items, title = 'Questions, answered plainly', id, soft = false } = Astro.props;
+---
+<section class:list={['section', { 'section--soft': soft }]} id={id}>
+  <div class="wrap">
+    <div class="section-head"><h2>{title}</h2></div>
+    <div class="faq-list">
+      {items.map((f) => (
+        <details class="t-acc">
+          <summary>{f.q}</summary>
+          <div class="faq-a"><p set:html={rich(f.a)} /></div>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>

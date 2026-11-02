@@ -1,0 +1,75 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Photo from '../../components/Photo.astro';
+import Close from '../../components/Close.astro';
+import More from '../../components/More.astro';
+import { pic } from '../../data/pictures';
+import { articlePics } from '../../data/journal-pics';
+
+const featuredId = '8000-homes-served-thoughtful-home-care';
+const all = (await getCollection('journal')).sort((a, b) => Date.parse(b.data.date) - Date.parse(a.data.date));
+const featured = all.find((a) => a.id === featuredId)!;
+// Two articles lead at half width each; the rest follow in equal columns.
+const [second, ...rest] = all.filter((a) => a.id !== featuredId);
+const lead = [featured, second];
+---
+<Base
+  title="Home Care Journal for San Antonio Homeowners | Diamond Shine"
+  description="What we have learned inside San Antonio homes since 2017: preservation, materials, seasonal rhythm, presentation and the quiet details that make a residence feel considered."
+>
+  <section class="page-hero">
+    <div class="wrap narrow stack t-stagger j-head">
+      <h1 class="t-stagger-line">The Home Journal, on caring for fine&nbsp;homes.</h1>
+      <p class="lead t-stagger-line t-stagger-line--2">What we have learned inside San Antonio homes since 2017: preservation, materials, seasonal rhythm, presentation, and the quiet details that make a residence feel considered.</p>
+    </div>
+  </section>
+
+  <section class="section" aria-label="Articles">
+    <div class="wrap">
+      <div class="j-pair">
+        {lead.map((a, i) => (
+          <a class="card t-learn" href={`/journal/${a.id}`}>
+            <Photo {...pic(articlePics[a.id][0])} ratio={1.5} show={680} sizes="(min-width: 900px) 48vw, 100vw" eager={i === 0} />
+            <div class="card-body">
+              <h2 class="j-lead">{a.data.title}</h2>
+              <span>{a.data.dek}</span>
+              <span class="small muted">{a.data.category} · {a.data.date}, {a.data.read}</span>
+              <More label="Read the article" />
+            </div>
+          </a>
+        ))}
+      </div>
+
+      <div class="cards j-grid">
+        {rest.map((a) => (
+          <a class="card t-learn" href={`/journal/${a.id}`}>
+            <Photo {...pic(articlePics[a.id][0])} ratio={1.5} show={400} sizes="(min-width: 1100px) 33vw, (min-width: 640px) 50vw, 100vw" />
+            <div class="card-body">
+              <h2 class="j-title">{a.data.title}</h2>
+              <span>{a.data.dek}</span>
+              <span class="small muted">{a.data.category} · {a.data.date}, {a.data.read}</span>
+              <More label="Read the article" />
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <Close
+    title="Ready for a&nbsp;conversation?"
+    text="Nothing here is a sales pitch. When you would like the home looked at properly, an evaluation is the natural next step."
+    picture="limestone-fireplace.jpeg"
+    service="not-sure"
+  />
+</Base>
+
+<style>
+  .j-head { text-align: center; }
+  .j-pair { display: grid; gap: clamp(36px, 3.4vw, 56px) var(--gap); }
+  @media (min-width: 900px) { .j-pair { grid-template-columns: 1fr 1fr; } }
+  .j-lead { font-size: clamp(1.5rem, 1.2rem + 1vw, 2.25rem); line-height: 1.15; }
+  .j-grid { margin-top: clamp(56px, 5vw, 80px); }
+  .j-title { font-size: var(--step-h3); line-height: 1.3; letter-spacing: 0; }
+</style>

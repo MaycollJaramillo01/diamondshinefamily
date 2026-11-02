@@ -1,0 +1,76 @@
+{
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/quote",
+      "destination": "/home-evaluation",
+      "statusCode": 301
+    },
+    {
+      "source": "/request-experience",
+      "destination": "/home-evaluation",
+      "statusCode": 301
+    },
+    {
+      "source": "/gallery",
+      "destination": "/transformation-stories",
+      "statusCode": 301
+    },
+    {
+      "source": "/military-pcs",
+      "destination": "/military-pcs-concierge",
+      "statusCode": 301
+    },
+    {
+      "source": "/private-clients",
+      "destination": "/private-concierge",
+      "statusCode": 301
+    },
+    {
+      "source": "/the-diamond-shine-experience",
+      "destination": "/services",
+      "statusCode": 301
+    },
+    {
+      "source": "/the-world-of-diamond-shine",
+      "destination": "/about",
+      "statusCode": 301
+    },
+    {
+      "source": "/the-people-behind-the-shine",
+      "destination": "/about",
+      "statusCode": 301
+    },
+    {
+      "source": "/our-community",
+      "destination": "/about",
+      "statusCode": 301
+    },
+    {
+      "source": "/white-glove-standard-film",
+      "destination": "/white-glove-standard",
+      "statusCode": 301
+    },
+    {
+      "source": "/hosting-season",
+      "destination": "/white-glove-welcome-home",
+      "statusCode": 301
+    },
+    {
+      "source": "/partnerships",
+      "destination": "/realtor-partnerships",
+      "statusCode": 301
+    },
+    {
+      "source": "/white-glove-academy",
+      "destination": "/careers",
+      "statusCode": 301
+    },
+    {
+      "source": "/white-glove-society/membership",
+      "destination": "/white-glove-society",
+      "statusCode": 301
+    }
+  ]
+}

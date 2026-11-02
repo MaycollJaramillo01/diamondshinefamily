@@ -1,0 +1,11 @@
+---
+// The verifiable proof that sits beside every call to action: a real recommendation and the family's founding.
+import { brand } from '../data/brand';
+import { reviews } from '../data/reviews';
+
+const { review = 'serena', class: cls } = Astro.props;
+const r = reviews.find((x) => x.id === review)!;
+---
+<p class:list={['proof', cls]}>
+  &ldquo;{r.excerpt}&rdquo; <a href="/reviews">{r.name}, {r.source}</a>. Family-owned in {brand.city} since {brand.founded}.
+</p>

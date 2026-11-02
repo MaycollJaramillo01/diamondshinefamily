@@ -1,0 +1,48 @@
+---
+// The first screen of every inside page: what it is and where, one call to action with proof beside it, one photograph.
+import Photo from './Photo.astro';
+import Cta from './Cta.astro';
+import ProofLine from './ProofLine.astro';
+import { pic } from '../data/pictures';
+import { rich } from '../lib/rich';
+import { brand } from '../data/brand';
+
+interface Props {
+  h1: string;
+  lead: string;
+  main: string;
+  position?: string;
+  crumb?: { label: string; href: string }[];
+  service?: string;
+  review?: string;
+  caption?: string;
+  // Pages that are not about a service (careers, gifts) offer their own route, and the header keeps the call to action.
+  action?: { label: string; href: string };
+}
+const { h1, lead, main, position, crumb, service, review = 'serena', caption, action } = Astro.props;
+---
+<section class="page-hero">
+  <div class="wrap split">
+    <div class="page-hero-copy t-stagger">
+      {crumb && (
+        <nav class="crumb t-stagger-line" aria-label="You are here">
+          {crumb.map((c, i) => <>{i > 0 && <span aria-hidden="true"> / </span>}<a href={c.href}>{c.label}</a></>)}
+        </nav>
+      )}
+      <h1 class="t-stagger-line t-stagger-line--2" set:html={h1} />
+      <p class="lead t-stagger-line t-stagger-line--3" set:html={rich(lead)} />
+      {action ? (
+        <p class="actions t-stagger-line t-stagger-line--4"><a class="btn btn--line" href={action.href}>{action.label}</a></p>
+      ) : (
+        <>
+          <div class="actions t-stagger-line t-stagger-line--4">
+            <Cta service={service} />
+            <a class="btn btn--line" href={brand.phoneHref}>Call {brand.phone}</a>
+          </div>
+          <ProofLine review={review} class="t-stagger-line t-stagger-line--5" />
+        </>
+      )}
+    </div>
+    <Photo {...pic(main)} ratio={1.4} position={position} show={580} sizes="(min-width: 900px) 46vw, 100vw" eager caption={caption} />
+  </div>
+</section>

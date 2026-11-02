@@ -1,0 +1,12 @@
+---
+// The company's real logo: its badge and its lettering, cut from the published file. The line beneath stays text, so the
+// working descriptor changes in one place (brand.ts).
+import { brand } from '../data/brand';
+---
+<a class="logo" href="/" aria-label={`${brand.name}, ${brand.descriptor}. Home page`}>
+  <img class="logo-badge" src="/brand/badge.webp" width="144" height="144" alt="" decoding="async" />
+  <span class="logo-text">
+    <img class="logo-word" src="/brand/wordmark.webp" width="408" height="51" alt="" decoding="async" />
+    <span class="logo-desc">{brand.descriptor}</span>
+  </span>
+</a>

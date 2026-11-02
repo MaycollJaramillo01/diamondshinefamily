@@ -1,0 +1,78 @@
+---
+import Logo from './Logo.astro';
+import Cta from './Cta.astro';
+import Translate from './Translate.astro';
+import { brand } from '../data/brand';
+import { primaryNav, serviceGroups } from '../data/nav';
+
+// overlay: the home page lays the bar over its photograph, and the hero carries the action instead.
+const { service, ctaHref, overlay = false } = Astro.props;
+const path = Astro.url.pathname.replace(/\.html$/, '');
+const current = (href: string) => (path === href || path.startsWith(`${href}/`) ? 'page' : undefined);
+const inServices = path === '/services' || serviceGroups.some((g) => g.links.some((l) => l.href.split('#')[0] === path) || g.href === path);
+---
+<a class="skip" href="#main">Skip to content</a>
+<header class:list={['site-head', { 'site-head--overlay': overlay }]}>
+  <div class="topbar">
+    <div class="wrap topbar-in">
+      <button type="button" class="topbar-link" aria-haspopup="dialog" aria-controls="translate" data-translate-open>
+        <svg class="topbar-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 8 6 6" /><path d="m4 14 6-6 2-3" /><path d="M2 5h12" /><path d="M7 2h1" /><path d="m22 22-5-10-5 10" /><path d="M14 18h6" /></svg>
+        <span>Translate<span class="topbar-more"> website</span> / <span lang="es">Idiomas</span></span>
+      </button>
+      <a class="topbar-link" href={brand.phoneHref}>
+        <svg class="topbar-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" /></svg>
+        <span><span class="topbar-more">Call or text </span>{brand.phone}</span>
+      </a>
+    </div>
+  </div>
+  <div class="wrap head-in">
+    <Logo />
+
+    <nav class="nav-wide" aria-label="Primary">
+      <ul>
+        <li>
+          <details class="menu" data-menu>
+            <summary aria-current={inServices ? 'page' : undefined}>Services</summary>
+            <div class="menu-panel t-dropdown">
+              <ul class="menu-groups">
+                {serviceGroups.map((g) => (
+                  <li>
+                    <a class="menu-group" href={g.href}>{g.name}</a>
+                    {g.links.length > 1 && (
+                      <ul class="menu-links">
+                        {g.links.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+                      </ul>
+                    )}
+                  </li>
+                ))}
+              </ul>
+              <p class="menu-all"><a href="/services">Compare all services</a></p>
+            </div>
+          </details>
+        </li>
+        {primaryNav.map((n) => <li><a href={n.href} aria-current={current(n.href)}>{n.label}</a></li>)}
+        <li class="nav-cta"><Cta class="btn--sm" service={service} href={ctaHref} /></li>
+      </ul>
+    </nav>
+
+    <details class="menu menu-phone" data-menu>
+      <summary>Menu</summary>
+      <nav class="menu-panel t-dropdown" aria-label="Primary">
+        <p><Cta service={service} href={ctaHref} /></p>
+        <ul class="phone-services">
+          {serviceGroups.map((g) => <li><a href={g.href}>{g.name}</a></li>)}
+        </ul>
+        <ul class="phone-primary">
+          {primaryNav.map((n) => <li><a href={n.href} aria-current={current(n.href)}>{n.label}</a></li>)}
+        </ul>
+        <p class="small"><a href={brand.phoneHref}>Call or text {brand.phone}</a></p>
+      </nav>
+    </details>
+  </div>
+</header>
+<Translate />
+
+<script>
+  import { initMenus } from '../scripts/menus';
+  initMenus();
+</script>

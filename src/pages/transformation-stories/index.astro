@@ -1,0 +1,66 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import Photo from '../../components/Photo.astro';
+import Sections from '../../components/Sections.astro';
+import Close from '../../components/Close.astro';
+import More from '../../components/More.astro';
+import { pic, illustrativeNote } from '../../data/pictures';
+import { rich } from '../../lib/rich';
+import { stories } from '../../data/stories';
+import type { Section } from '../../data/page-types';
+
+const integrity: Section[] = [
+  {
+    kind: 'limits',
+    title: 'Real stories, approved assets only',
+    items: [
+      'Real client photography, names, addresses and testimonials appear only with written approval from the homeowner or property professional.',
+      'We do not invent statistics, guarantees or outcomes. Each story reflects only the categories of service performed by Diamond Shine.',
+      'These stories exist to educate homeowners and property professionals, not to overstate results.',
+    ],
+    note: 'Stories are prepared as editorial templates, using generic, non-identifying wording. Our documentation confirms only the services performed or observed. It is not a home inspection, appraisal, engineering opinion or real-estate valuation.',
+  },
+];
+---
+<Base
+  title="Home Care Case Studies in San Antonio, TX | Diamond Shine"
+  description="Written case studies of market-ready preparation, carpet restoration and move-out resets around San Antonio. Real photographs appear only with client approval."
+>
+  <PageHero
+    h1="Our work, in writing, around San&nbsp;Antonio."
+    lead="Case studies of property care told as written records rather than a gallery. Additional client-approved stories are added as photography is authorized."
+    main="limestone-fireplace.jpeg"
+    caption="Illustrative image, not a client home."
+    service="market-ready"
+    review="crystal"
+  />
+
+  <section class="section" aria-labelledby="st-title">
+    <div class="wrap">
+      <div class="section-head"><h2 id="st-title">Three cases, and where each stands</h2></div>
+      <div class="cards">
+        {stories.map((s) => (
+          <a class="card t-learn" href={`/transformation-stories/${s.slug}`}>
+            <Photo {...pic(s.pic)} ratio={1.5} show={400} sizes="(min-width: 1100px) 33vw, (min-width: 640px) 50vw, 100vw" caption={illustrativeNote} />
+            <div class="card-body">
+              <h3 set:html={s.h1} />
+              <span>{s.summary}</span>
+              <span class="small muted" set:html={rich(s.statusLine)} />
+              <More label="Read the full record" />
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <Sections sections={integrity} startSoft />
+
+  <Close
+    title="Prepare your next chapter"
+    text="Request an evaluation and receive personalized recommendations for your home."
+    picture="stone-kitchen.jpg"
+    service="market-ready"
+  />
+</Base>

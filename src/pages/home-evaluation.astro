@@ -1,0 +1,103 @@
+---
+import Base from '../layouts/Base.astro';
+import ProofLine from '../components/ProofLine.astro';
+import EvaluationForm from '../components/EvaluationForm.astro';
+import Sections from '../components/Sections.astro';
+import Faq from '../components/Faq.astro';
+import Close from '../components/Close.astro';
+import { rich } from '../lib/rich';
+import { brand } from '../data/brand';
+import type { Section } from '../data/page-types';
+
+const sections: Section[] = [
+  {
+    kind: 'steps',
+    title: 'How the evaluation works',
+    text: 'A walkthrough, not an inspection or a certification. We look at the home the way you actually experience it, and follow up with a prioritized recommendation in plain English.',
+    steps: [
+      { name: 'You share', text: 'A few minutes of context about the property, your goals and the areas you care about most.' },
+      { name: 'We review', text: 'Our team reviews what you have shared and, where helpful, walks the home with you.' },
+      { name: 'You receive', text: 'A prioritized plan: what we would recommend, in what order, and why. Each area is marked Maintain, Restore or Priority.' },
+    ],
+  },
+  {
+    kind: 'plate',
+    title: 'Begin with what your home needs&nbsp;most',
+    text: 'The evaluation helps us recommend a useful starting point: a deep reset, carpet or tile restoration, market-ready preparation, or the full project you have in mind. We explain the recommended work, what is included, any exclusions and your personal investment before you decide.',
+    note: 'Every service begins with a signed agreement covering scope, price, payment and responsibilities. Continuing care is optional, and separately quoted.',
+    pic: 'stone-kitchen.jpg',
+  },
+  {
+    kind: 'list',
+    title: 'What we look at',
+    text: 'The major living areas and surfaces of the home.',
+    pic: 'empty-home.jpg',
+    items: ['Kitchen', 'Bathrooms', 'Living areas', 'Bedrooms', 'Carpet', 'Tile and grout', 'Walls', 'Glass', 'Exterior concrete'],
+  },
+  {
+    kind: 'limits',
+    id: 'limits',
+    title: 'What we don’t do',
+    text: 'We perform cleaning, detailing, surface restoration and property presentation. We do not perform plumbing, mold remediation, pest control, electrical, HVAC, structural repair, or flooring and countertop replacement, and we do not issue inspections or certifications. When we see one of those concerns, we tell you and refer you to the appropriate licensed trade.',
+  },
+];
+
+const faq = [
+  { q: 'What is the Home Evaluation?', a: 'A walkthrough of your home in San Antonio. We review the major living areas and surfaces, then follow up with a prioritized, plain-English recommendation before any service is scheduled.' },
+  { q: 'Does the evaluation cost anything?', a: 'It is published as complimentary, and requesting one does not commit you to a service. [confirm:complimentary] It is a consultation, not an inspection or a certification.' },
+  { q: 'What areas of San Antonio do you serve?', a: 'San Antonio and surrounding communities, including Alamo Heights, Stone Oak, Boerne, Helotes, Schertz, Converse, New Braunfels and nearby areas. [confirm:communities] Coverage depends on the property location and requested service.' },
+  { q: 'What do I receive afterward?', a: 'A clear recommendation for your home: what we would suggest addressing, in what order and why, written in plain English, with no obligation to proceed.' },
+  { q: 'What happens if something is outside your scope?', a: 'We tell you, and we point you toward the appropriate licensed trade.' },
+  { q: 'How does the evaluation lead to a plan?', a: 'Your recommendation is built around the condition of the property and what matters most to you, then paired with the appropriate service or recurring care plan.' },
+  { q: 'Can I use it to prepare a home for sale?', a: 'Yes. Sellers, Realtors and property managers often start here. If the goal is a listing, showing or turnover, the evaluation routes into [market-ready preparation](/market-ready-solutions).' },
+  { q: 'Do you serve military families relocating to or from JBSA?', a: 'Yes. We work with families moving through Joint Base San Antonio on move-in and move-out property care. We are an independent business, not affiliated with or endorsed by the military. [Military PCS home care](/military-pcs-concierge)' },
+  { q: 'Do you evaluate move-in and move-out properties?', a: 'Yes. Vacant, pre-move-in and post-move-out properties are common. Empty homes are often faster to assess because every surface is visible.' },
+];
+---
+<Base
+  title="Request a Home Evaluation in San Antonio, TX | Diamond Shine"
+  description="A walkthrough of your San Antonio home, followed by a prioritized plan in plain English: each area marked Maintain, Restore or Priority. Not an inspection, and no obligation."
+  ctaHref="#evaluation-form"
+>
+  <section class="page-hero">
+    <div class="wrap he">
+      <div class="he-intro stack">
+        <h1>Request a Home Evaluation.</h1>
+        <p class="lead" set:html={rich('A complimentary walkthrough of your San Antonio home. [confirm:complimentary] We review the property, listen to what matters most to you, then recommend what to do first: cleaning, restoration, market-ready preparation or recurring care.')} />
+        <p>Requesting one does not commit you to a service, reserve a date or take a payment.</p>
+      </div>
+      <div class="he-form">
+        <div class="form-card"><EvaluationForm /></div>
+        <p class="small he-commercial">Managing a business, office or facility? <a href="/commercial">Start with commercial care</a>.</p>
+      </div>
+      <div class="he-proof stack">
+        <ProofLine review="serena" />
+        <p class="creds" set:html={rich('Insured [confirm:insured] Bonded [confirm:bonded] Background-checked team [confirm:background]')} />
+        <ul class="contact-lines">
+          <li><a href={brand.phoneHref}>Prefer to talk? Call or text {brand.phone}</a></li>
+          <li><a href={`mailto:${brand.email}`}>{brand.email}</a></li>
+          <li>{brand.hours.text}</li>
+          <li class="muted" data-office-status></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <Sections sections={sections} />
+  <Faq items={faq} title="What people ask first" />
+  <Close
+    title="Ready when you are"
+    text="The form takes about a minute. If you would rather talk, a member of our family answers the phone."
+    action={{ label: 'Back to the form', href: '#evaluation-form' }}
+  />
+</Base>
+
+<style>
+  /* Phones read intro, form, proof. Wider screens hold the form beside the other two. */
+  .he { display: grid; gap: 28px; }
+  .he-commercial { margin-top: 12px; }
+  @media (min-width: 900px) {
+    .he { grid-template-columns: 1fr 1fr; grid-template-rows: auto 1fr; column-gap: clamp(28px, 5vw, 64px); align-items: start; }
+    .he-form { grid-column: 2; grid-row: 1 / span 2; }
+  }
+</style>

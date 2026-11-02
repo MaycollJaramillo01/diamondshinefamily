@@ -1,0 +1,84 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Photo from '../../components/Photo.astro';
+import Close from '../../components/Close.astro';
+import { pic } from '../../data/pictures';
+import { articleNotes, articlePics } from '../../data/journal-pics';
+import { rich } from '../../lib/rich';
+
+export async function getStaticPaths() {
+  const all = await getCollection('journal');
+  return all.map((entry) => ({ params: { slug: entry.id }, props: { entry, all } }));
+}
+
+const { entry, all } = Astro.props;
+const { Content } = await render(entry);
+const lead = articlePics[entry.id][0];
+const note = articleNotes[entry.id];
+const headline = entry.data.headline ?? entry.data.title;
+
+// Same subject first, then the newest, so the three next reads stay close to this one.
+const related = all
+  .filter((a) => a.id !== entry.id)
+  .sort((a, b) => Number(b.data.category === entry.data.category) - Number(a.data.category === entry.data.category) || Date.parse(b.data.date) - Date.parse(a.data.date))
+  .slice(0, 3);
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: entry.data.title,
+    description: entry.data.description,
+    datePublished: new Date(entry.data.date).toISOString().slice(0, 10),
+    articleSection: entry.data.category,
+    mainEntityOfPage: new URL(`/journal/${entry.id}`, Astro.site).href,
+    publisher: { '@id': new URL('/#business', Astro.site).href },
+  },
+];
+---
+<Base title={`${entry.data.title} | Diamond Shine`} description={entry.data.description} schema={schema}>
+  <article>
+    <header class="wrap narrow article-head t-stagger">
+      <nav class="crumb t-stagger-line" aria-label="You are here"><a href="/journal">The Home Journal</a> / {entry.data.category}</nav>
+      <h1 class="t-stagger-line t-stagger-line--2">{headline}</h1>
+      <p class="lead t-stagger-line t-stagger-line--3">{entry.data.dek}</p>
+      <p class="small muted t-stagger-line t-stagger-line--4">{entry.data.date}, {entry.data.read}</p>
+      {note && <p class="small t-stagger-line t-stagger-line--5" set:html={rich(note)} />}
+    </header>
+    <div class="wrap narrow article-photo">
+      <Photo {...pic(lead)} ratio={1.78} show={720} sizes="(min-width: 800px) 720px, 100vw" eager />
+    </div>
+    <div class="wrap narrow">
+      <div class="prose"><Content /></div>
+    </div>
+  </article>
+
+  <section class="section section--soft article-next" aria-labelledby="a-next-title">
+    <div class="wrap">
+      <div class="section-head"><h2 id="a-next-title">Keep reading</h2></div>
+      <div class="cards">
+        {related.map((a) => (
+          <a class="card" href={`/journal/${a.id}`}>
+            <Photo {...pic(articlePics[a.id][0])} ratio={1.5} show={400} sizes="(min-width: 1100px) 33vw, (min-width: 640px) 50vw, 100vw" />
+            <div class="card-body">
+              <strong class="card-title">{a.data.title}</strong>
+              <span class="small muted">{a.data.category} · {a.data.date}, {a.data.read}</span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <Close
+    title="Ready for a&nbsp;conversation?"
+    text="Nothing here is a sales pitch. When you would like the home looked at properly, an evaluation is the natural next step."
+    picture="limestone-fireplace.jpeg"
+    service="not-sure"
+  />
+</Base>
+
+<style>
+  .article-next { margin-top: clamp(48px, 6vw, 80px); }
+</style>

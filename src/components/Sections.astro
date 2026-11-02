@@ -1,0 +1,217 @@
+---
+// The blocks inside pages are built from. Bands alternate white and pale blue so each block reads on its own.
+import Photo from './Photo.astro';
+import { pic } from '../data/pictures';
+import { rich } from '../lib/rich';
+import { reviews } from '../data/reviews';
+import type { Section } from '../data/page-types';
+
+interface Props {
+  sections: Section[];
+  // Case studies say beside each photograph that it is not the property.
+  caption?: string;
+  // Starts the alternation on the pale band, for sections that follow a white one.
+  startSoft?: boolean;
+}
+const { sections, caption, startSoft = false } = Astro.props;
+const tone = (i: number) => ((i % 2 === 1) !== startSoft ? 'section--soft' : '');
+const half = '(min-width: 1248px) 576px, (min-width: 900px) 46vw, 100vw';
+const third = '(min-width: 1100px) 33vw, (min-width: 640px) 50vw, 100vw';
+---
+{sections.map((s, i) => {
+  if (s.kind === 'rows' || s.kind === 'list') {
+    const p = s.pic ? pic(s.pic) : null;
+    const body = (
+      <div>
+        <div class="section-head">
+          <h2 set:html={s.title} />
+          {s.text && <p set:html={rich(s.text)} />}
+        </div>
+        {s.kind === 'rows' ? (
+          <div class="rows">
+            {s.items.map((it) => (
+              <div class="row-item">
+                <h3 set:html={rich(it.name)} />
+                {it.text && <p set:html={rich(it.text)} />}
+              </div>
+            ))}
+          </div>
+        ) : (
+          <ul class:list={['checks', { 'checks--2': !p && s.items.length > 5 }]}>
+            {s.items.map((it) => <li set:html={rich(it)} />)}
+          </ul>
+        )}
+        {s.note && <p class="note" set:html={rich(s.note)} />}
+      </div>
+    );
+    return (
+      <section id={s.id} class:list={['section', tone(i)]}>
+        <div class="wrap">
+          {p ? (
+            <div class:list={['split split--top', { 'split--flip': s.kind === 'rows' && s.side === 'left' }]}>
+              {body}
+              <Photo {...p} ratio={1.1} show={580} sizes={half} caption={caption} />
+            </div>
+          ) : body}
+        </div>
+      </section>
+    );
+  }
+  if (s.kind === 'steps') {
+    return (
+      <section id={s.id} class:list={['section', tone(i)]}>
+        <div class="wrap">
+          <div class="section-head">
+            <h2 set:html={s.title} />
+            {s.text && <p set:html={rich(s.text)} />}
+          </div>
+          <ol class="steps">
+            {s.steps.map((st) => (
+              <li>
+                <h3 set:html={rich(st.name)} />
+                {st.text && <p set:html={rich(st.text)} />}
+              </li>
+            ))}
+          </ol>
+          {s.note && <p class="note" set:html={rich(s.note)} />}
+        </div>
+      </section>
+    );
+  }
+  if (s.kind === 'columns') {
+    return (
+      <section id={s.id} class:list={['section', tone(i)]}>
+        <div class="wrap">
+          <div class="section-head">
+            <h2 set:html={s.title} />
+            {s.text && <p set:html={rich(s.text)} />}
+          </div>
+          <div class="cards cards--fit">
+            {s.columns.map((c) => (
+              <div class="card">
+                <div class="card-body card-body--flat">
+                  <h3>{c.name}</h3>
+                  {c.items.length > 1
+                    ? <ul class="checks">{c.items.map((it) => <li set:html={rich(it)} />)}</ul>
+                    : <p set:html={rich(c.items[0])} />}
+                </div>
+              </div>
+            ))}
+          </div>
+          {s.note && <p class="note" set:html={rich(s.note)} />}
+        </div>
+      </section>
+    );
+  }
+  if (s.kind === 'plate') {
+    return (
+      <section id={s.id} class:list={['section', tone(i)]}>
+        <div class:list={['wrap split', { 'split--flip': s.flip }]}>
+          <Photo {...pic(s.pic)} ratio={1.3} show={580} sizes={half} caption={caption} />
+          <div class="stack">
+            <h2 set:html={s.title} />
+            {s.text && <p set:html={rich(s.text)} />}
+            {s.items && <ul class="checks">{s.items.map((it) => <li set:html={rich(it)} />)}</ul>}
+            {s.note && <p class="muted" set:html={rich(s.note)} />}
+          </div>
+        </div>
+      </section>
+    );
+  }
+  if (s.kind === 'table') {
+    return (
+      <section id={s.id} class:list={['section', tone(i)]}>
+        <div class="wrap">
+          <div class="section-head">
+            <h2 set:html={s.title} />
+            {s.text && <p set:html={rich(s.text)} />}
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr>{s.head.map((h) => <th scope="col">{h}</th>)}</tr></thead>
+              <tbody>
+                {s.rows.map((r) => (
+                  <tr>
+                    {r.map((c, n) => (n === 0 ? <th scope="row" set:html={rich(c)} /> : <td data-label={s.head[n]} set:html={rich(c)} />))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          {s.note && <p class="note" set:html={rich(s.note)} />}
+        </div>
+      </section>
+    );
+  }
+  if (s.kind === 'limits') {
+    return (
+      <section id={s.id} class:list={['section', tone(i)]}>
+        <div class="wrap">
+          <div class="panel">
+            <h2 set:html={s.title} />
+            {s.text && <p set:html={rich(s.text)} />}
+            {s.items && <ul class="bullets">{s.items.map((it) => <li set:html={rich(it)} />)}</ul>}
+            {s.columns && (
+              <div class="rows">
+                {s.columns.map((c) => (
+                  <div class="row-item">
+                    <h3>{c.name}</h3>
+                    <ul class="bullets">{c.items.map((it) => <li set:html={rich(it)} />)}</ul>
+                  </div>
+                ))}
+              </div>
+            )}
+            {s.note && <p set:html={rich(s.note)} />}
+          </div>
+        </div>
+      </section>
+    );
+  }
+  if (s.kind === 'prints') {
+    return (
+      <section id={s.id} class:list={['section', tone(i)]}>
+        <div class="wrap">
+          <div class="section-head">
+            <h2 set:html={s.title} />
+            {s.text && <p set:html={rich(s.text)} />}
+          </div>
+          <div class="cards">
+            {s.items.map((it) => (
+              <article class="card">
+                <Photo {...pic(it.pic)} ratio={1.5} show={400} sizes={third} />
+                <div class="card-body">
+                  <h3 set:html={rich(it.name)} />
+                  <p set:html={rich(it.text)} />
+                </div>
+              </article>
+            ))}
+          </div>
+          {s.note && <p class="note" set:html={rich(s.note)} />}
+        </div>
+      </section>
+    );
+  }
+  if (s.kind === 'statement') {
+    return (
+      <section id={s.id} class:list={['section', tone(i)]}>
+        <div class="wrap">
+          <h2 class="sr-only">{s.title}</h2>
+          <p class="statement" set:html={rich(s.text)} />
+        </div>
+      </section>
+    );
+  }
+  if (s.kind === 'quote') {
+    const r = reviews.find((x) => x.id === s.review)!;
+    return (
+      <section id={s.id} class:list={['section', tone(i)]} aria-label="What a client said">
+        <div class="wrap">
+          <figure class="quote-big">
+            <blockquote>&ldquo;{r.excerpt ?? r.text}&rdquo;</blockquote>
+            <figcaption><a href="/reviews">{r.name}, {r.source}</a></figcaption>
+          </figure>
+        </div>
+      </section>
+    );
+  }
+})}

@@ -1,0 +1,90 @@
+---
+import Base from '../../layouts/Base.astro';
+import Photo from '../../components/Photo.astro';
+import { rich } from '../../lib/rich';
+import { brand } from '../../data/brand';
+import { people } from '../../data/people';
+import type { Person } from '../../data/people';
+
+export function getStaticPaths() {
+  return people.map((person) => ({ params: { person: person.slug }, props: { person } }));
+}
+
+const { person } = Astro.props as { person: Person };
+const others = people.filter((p) => p.slug !== person.slug);
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: person.name,
+    jobTitle: person.role,
+    worksFor: { '@id': new URL('/#business', Astro.site).href },
+    url: new URL(`/people/${person.slug}`, Astro.site).href,
+  },
+];
+---
+<Base title={`${person.name}, ${person.role} | Diamond Shine, San Antonio`} description={`${person.intro} ${person.name} is ${person.role} of Diamond Shine, a family-owned San Antonio company.`} schema={schema}>
+  <section class="page-hero">
+    <div class="wrap split">
+      <div class="page-hero-copy t-stagger">
+        <nav class="crumb t-stagger-line" aria-label="You are here"><a href="/about">The family</a> / {person.name}</nav>
+        <h1 class="t-stagger-line t-stagger-line--2">{person.name}</h1>
+        <p class="lead t-stagger-line t-stagger-line--3">{person.role}, {brand.legalEntity}</p>
+        <p class="muted t-stagger-line t-stagger-line--4">{person.also}</p>
+        <p class="lead t-stagger-line t-stagger-line--5">{person.statement}</p>
+        <p class="t-stagger-line t-stagger-line--6">{person.intro}</p>
+      </div>
+      <Photo class="portrait person-portrait" src={person.portrait} alt={person.alt} ratio={0.8} show={440} position="top" sizes="(min-width: 900px) 440px, 100vw" eager caption={rich('Portrait as published today. [confirm:portraits]')} />
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap narrow">
+      <figure class="quote-big person-quote"><blockquote>&ldquo;{person.quote}&rdquo;</blockquote></figure>
+      <div class="prose">
+        {person.chapters.map((c) => (
+          <>
+            <h2>{c.title}</h2>
+            {c.paragraphs.map((t) => <p set:html={rich(t)} />)}
+          </>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--soft" aria-labelledby="p-glance-title">
+    <div class="wrap split split--top">
+      <div class="stack">
+        <h2 id="p-glance-title">At a glance</h2>
+        <ul class="checks">
+          {person.glance.map((g) => <li>{g}</li>)}
+        </ul>
+      </div>
+      <ul class="contact-lines">
+        {person.links.map((l) => <li><a href={l.href} rel={l.href.startsWith('http') ? 'noopener' : undefined}>{l.label}</a></li>)}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="p-others-title">
+    <div class="wrap">
+      <div class="section-head"><h2 id="p-others-title">Meet the family</h2></div>
+      <div class="cards">
+        {others.map((o) => (
+          <a class="card" href={`/people/${o.slug}`}>
+            <Photo class="portrait" src={o.portrait} alt={o.alt} ratio={0.8} show={400} position="top" sizes="(min-width: 1100px) 33vw, (min-width: 640px) 50vw, 100vw" />
+            <div class="card-body">
+              <strong class="card-title">{o.name}</strong>
+              <span class="muted">{o.role}</span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .person-portrait { width: 100%; max-width: 440px; justify-self: center; }
+  .person-quote { margin-bottom: clamp(32px, 4vw, 48px); }
+</style>

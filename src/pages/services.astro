@@ -1,0 +1,86 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Photo from '../components/Photo.astro';
+import Sections from '../components/Sections.astro';
+import Faq from '../components/Faq.astro';
+import Close from '../components/Close.astro';
+import { pic } from '../data/pictures';
+import { serviceGroups } from '../data/nav';
+import type { Section } from '../data/page-types';
+
+// What each kind of care is, in plain words, and the picture beside it.
+const details: Record<string, { text: string; pic: string }> = {
+  cleaning: { text: 'Routine and detailed home cleaning designed around the condition of your property and the level of care it needs, from everyday upkeep to a complete reset before or after a move.', pic: 'stone-kitchen.jpg' },
+  restoration: { text: 'Specialized care for heavily used flooring and surfaces, soil and buildup, along with interior painting and concrete pressure washing. Results vary with material and condition, and expectations are discussed before approval.', pic: 'carpet-restoration.jpg' },
+  recurring: { text: 'Ongoing care for clients who want consistent results after a deep clean, move-in reset, restoration service or seasonal refresh, with optional finishing details.', pic: 'essential.jpg' },
+  preparation: { text: 'Cleaning, restoration, presentation care and select touch-ups before photography, showings, open houses and final walkthroughs, for homeowners, Realtors, investors, property managers and families on PCS orders.', pic: 'market-ready.jpg' },
+  concierge: { text: 'One point of contact for your agreed home-care schedule, household priorities, arrivals and outside-provider coordination. We begin with a private consultation and a written plan that sets out capacity, costs and approvals.', pic: 'limestone-fireplace.jpeg' },
+  commercial: { text: 'Care for offices, administrative spaces and client-facing facilities, for organizations that value presentation, consistency, discretion, communication and trusted service.', pic: 'commercial.jpg' },
+};
+
+const begin: Section[] = [
+  {
+    kind: 'plate',
+    title: 'Let the home tell us',
+    text: 'An evaluation is a conversation and a walkthrough, not a sales appointment. We review the home and recommend what to do first: cleaning, restoration, market-ready preparation or recurring care.',
+    pic: 'gloved-hand-stone.jpg',
+    flip: true,
+    note: 'Requesting one does not commit you to a service. [How an evaluation works](/home-evaluation)',
+  },
+];
+
+const faq = [
+  { q: 'How is pricing determined?', a: 'Individually, based on the property’s condition, size, materials, access, frequency and the work you approve. Before work begins, a signed agreement sets out the scope, price, payment terms and responsibilities.' },
+  { q: 'Can I send photos for a quote?', a: 'Yes. Photos are welcome and help us understand the condition. Please keep people, documents and valuables out of view.' },
+  { q: 'When is payment due, and what do you accept?', a: 'Payment terms are set out in your signed agreement. Zelle is our primary payment method. Secure digital payments may also be available through Square when available. [confirm:square]' },
+  { q: 'What is outside the scope of your services?', a: 'We do not perform plumbing, mold remediation, pest control, electrical, HVAC, structural repair, or flooring and countertop replacement, and we do not issue inspections or certifications. When we see one of those concerns, we tell you and refer you to the appropriate licensed trade.' },
+  { q: 'Can carpet or grout always be fully restored?', a: 'No. Permanent stains, dye loss, damaged fibers and cracked grout may remain. Results vary by material, age, prior treatment, source, severity and condition. [Read the limits](/restoration#limits).' },
+  { q: 'What areas do you serve?', a: 'San Antonio and surrounding Hill Country and I-35 corridor communities. [See the full list](/service-areas). Travel outside the area is considered case by case.' },
+  { q: 'Can pets stay home during the service?', a: 'Please secure pets or tell us your pet-access instructions before we arrive.' },
+];
+---
+<Base
+  title="Home Care Services in San Antonio, TX | Diamond Shine"
+  description="Specialized cleaning, surface restoration, recurring care, property preparation, private concierge and commercial care for San Antonio homes and businesses."
+  service="not-sure"
+>
+  <PageHero
+    h1="Home care services in San&nbsp;Antonio,&nbsp;TX."
+    lead="Specialized cleaning, restoration and recurring care for private residences, with property preparation, concierge and commercial care from the same family."
+    main="hero-services.jpg"
+    service="not-sure"
+    review="kristina"
+  />
+
+  {serviceGroups.map((g, i) => {
+    const d = details[g.id];
+    return (
+      <section id={g.id} class:list={['section', { 'section--soft': i % 2 === 1 }]}>
+        <div class:list={['wrap split', { 'split--flip': i % 2 === 1 }]}>
+          <div class="stack">
+            <h2><a class="h-link" href={g.href}>{g.name}</a></h2>
+            <p>{d.text}</p>
+            {g.links.length > 1 && (
+              <ul class="link-list">
+                {g.links.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+              </ul>
+            )}
+            <p><a class="btn btn--line" href={g.href}>See details</a></p>
+          </div>
+          <Photo {...pic(d.pic)} ratio={1.4} show={580} sizes="(min-width: 1248px) 576px, (min-width: 900px) 46vw, 100vw" />
+        </div>
+      </section>
+    );
+  })}
+
+  <Sections sections={begin} />
+  <Faq items={faq} soft />
+  <Close
+    title="Not sure where to begin?"
+    text="Share your home and preferred timing. We will confirm the scope, pricing and availability with you before anything is reserved."
+    picture="limestone-entrance.webp"
+    service="not-sure"
+    review="serena"
+  />
+</Base>

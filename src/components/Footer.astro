@@ -1,0 +1,56 @@
+---
+// The close of every page: the back of the company's card, cut with the diamond's facets, on the badge navy. Everything on the centre line.
+import Facets from './Facets.astro';
+import { brand } from '../data/brand';
+import { footerMain, footerMore, footerLegal, serviceGroups } from '../data/nav';
+
+const year = new Date().getFullYear();
+const explore = [
+  ...serviceGroups.map((g) => ({ label: g.name, href: g.href })),
+  ...footerMain.filter((l) => l.href !== '/services'),
+  ...footerMore,
+];
+---
+<footer class="foot">
+  <div class="wrap">
+    <div class="card-back">
+      <Facets />
+      <h2 class="back-sign">With care, the Leal family</h2>
+      <p class="back-message">Family-owned in {brand.city}, Texas, since {brand.founded}. We answer {brand.hours.short}<br />{brand.hours.closed}</p>
+      <p class="back-lines"><a href={brand.phoneHref}>Call or text {brand.phone}</a><a href={`mailto:${brand.email}`}>{brand.email}</a></p>
+      <p class="back-social">
+        <a href={brand.socials.google} rel="noopener">Google reviews</a>
+        <a href={brand.socials.facebook} rel="noopener">Facebook</a>
+        <a href={brand.socials.instagram} rel="noopener">Instagram</a>
+      </p>
+      <nav class="back-explore" aria-label="Everything on this site">
+        <ul>
+          {explore.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+        </ul>
+      </nav>
+      <div class="back-imprint">
+        <p>&copy; {year} {brand.legalEntity}. {footerLegal.map((l, i) => <>{i > 0 && ' · '}<a href={l.href}>{l.label}</a></>)}</p>
+        <p>Photographs on this site are illustrative unless a page says otherwise. They are not client homes or results.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .foot { padding-block: clamp(72px, 8vw, 120px) clamp(32px, 4vw, 56px); background: var(--navy); }
+  .card-back { position: relative; display: grid; justify-items: center; max-width: 1180px; margin-inline: auto; padding: clamp(56px, 6vw, 96px) clamp(24px, 5vw, 80px) clamp(32px, 3vw, 44px); background: var(--paper); text-align: center; }
+  .card-back > :global(.facets) { position: absolute; left: 0; right: 0; top: -10px; }
+  .back-sign { font-size: var(--step-head); }
+  .back-message { max-width: 52ch; margin-top: 20px; }
+  .back-lines { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 40px; margin-top: 36px; }
+  .back-lines a { display: inline-flex; align-items: center; min-height: 44px; font-family: var(--display); font-size: var(--step-lead); color: var(--navy); text-decoration: none; }
+  .back-lines a:hover { color: var(--blue); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
+  .back-social { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 28px; margin-top: 12px; }
+  .back-social a { display: inline-flex; align-items: center; min-height: 40px; font-weight: 500; letter-spacing: 0.02em; color: var(--blue); }
+  .back-explore { width: 100%; margin-top: clamp(48px, 5vw, 72px); }
+  .back-explore ul { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 28px; }
+  .back-explore a { display: inline-flex; align-items: center; min-height: 40px; font-size: var(--step-small); font-weight: 500; letter-spacing: 0.02em; color: var(--navy); text-decoration: none; }
+  .back-explore a:hover { color: var(--blue); text-decoration: underline; text-decoration-thickness: 1px; }
+  .back-imprint { display: grid; gap: 6px; margin-top: 28px; font-size: var(--step-small); line-height: 1.5; color: var(--muted); }
+  .back-imprint a { color: var(--muted); }
+</style>

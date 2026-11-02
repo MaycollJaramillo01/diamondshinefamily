@@ -1,0 +1,60 @@
+---
+// Service and guidance pages: one data entry each, drawn from the same arrangements.
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Sections from '../components/Sections.astro';
+import Faq from '../components/Faq.astro';
+import Related from '../components/Related.astro';
+import Close from '../components/Close.astro';
+import { services } from '../data/services';
+import { secondary } from '../data/secondary';
+import type { Page } from '../data/page-types';
+
+export function getStaticPaths() {
+  return [...services, ...secondary].map((page) => ({ params: { page: page.slug }, props: { page } }));
+}
+
+const { page } = Astro.props as { page: Page };
+const url = new URL(`/${page.slug}`, Astro.site).href;
+const schema = page.serviceName
+  ? [
+      {
+        '@context': 'https://schema.org',
+        '@type': 'Service',
+        name: page.serviceName,
+        serviceType: page.serviceName,
+        description: page.description,
+        provider: { '@id': new URL('/#business', Astro.site).href },
+        areaServed: { '@type': 'City', name: 'San Antonio, TX' },
+        url,
+      },
+    ]
+  : [];
+
+// Bands keep alternating after the sections: an odd count ends on white.
+const faqSoft = page.sections.length % 2 === 1;
+const relatedSoft = page.faq ? !faqSoft : faqSoft;
+---
+<Base title={page.seoTitle} description={page.description} service={page.formService} schema={schema}>
+  <PageHero
+    h1={page.h1}
+    lead={page.lead}
+    main={page.hero.main}
+    position={page.hero.position}
+    crumb={page.crumb}
+    service={page.formService}
+    review={page.review}
+    action={page.action}
+  />
+  <Sections sections={page.sections} />
+  {page.faq && <Faq items={page.faq} soft={faqSoft} />}
+  {page.related && <Related items={page.related} soft={relatedSoft} />}
+  <Close
+    title={page.close.title}
+    text={page.close.text}
+    picture={page.close.pic}
+    service={page.formService}
+    review={page.closeReview}
+    action={page.action}
+  />
+</Base>

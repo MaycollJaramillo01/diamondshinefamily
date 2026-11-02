@@ -1,0 +1,6 @@
+---
+// The diamond-cut edge of a paper sheet: shallow facets 24px apart at every width. The path is cropped to fit, never stretched.
+const { flip = false } = Astro.props;
+const d = 'M0 10' + Array.from({ length: 100 }, (_, i) => ` L${i * 24 + 12} 0 L${i * 24 + 24} 10`).join('') + ' Z';
+---
+<svg class="facets" viewBox="0 0 2400 10" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false" style={flip ? 'transform: scaleY(-1)' : undefined}><path d={d} fill="currentColor" /></svg>

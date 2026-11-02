@@ -1,0 +1,17 @@
+{
+  "name": "diamond-shine-site",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build && node scripts/write-redirects.mjs && node scripts/prune-originals.mjs && node scripts/check-urls.mjs",
+    "preview": "astro preview",
+    "check": "node scripts/check-logic.mjs && node scripts/check-urls.mjs"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.4",
+    "astro": "^7.3.8",
+    "sharp": "^0.35.5"
+  }
+}

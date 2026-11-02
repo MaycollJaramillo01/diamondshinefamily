@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.astro/
+.vercel/
+.env
+.env.*
+# transitions.dev files kept locally for reference; the site does not import them
+src/vendor/

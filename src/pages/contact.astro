@@ -1,0 +1,53 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Sections from '../components/Sections.astro';
+import ProofLine from '../components/ProofLine.astro';
+import EvaluationForm from '../components/EvaluationForm.astro';
+import { brand } from '../data/brand';
+import type { Section } from '../data/page-types';
+
+const payment: Section[] = [
+  {
+    kind: 'plate',
+    title: 'How payment works',
+    text: 'Zelle is our primary payment method. For client convenience, secure digital payments may also be available through Square, including major credit cards, debit cards, approved digital invoice payments and ACH or bank transfer options when available. [confirm:square]',
+    pic: 'limestone-entrance.webp',
+    note: 'Payment terms are set out in your signed agreement. No payment is collected on this website.',
+  },
+];
+---
+<Base
+  title="Contact Diamond Shine, Home Care in San Antonio, TX"
+  description={`Call or text ${brand.phone}, or write to ${brand.email}, to discuss cleaning, restoration or recurring care for a home in San Antonio. A member of our family follows up personally.`}
+  service="not-sure"
+  ctaHref="#evaluation-form"
+>
+  <PageHero
+    h1="Talk to the family about your&nbsp;home."
+    lead="Reach out to discuss recurring care, restoration or a plan for your San Antonio home or property. A member of our family will follow up personally."
+    main="courtyard-wide.webp"
+    action={{ label: `Call or text ${brand.phone}`, href: brand.phoneHref }}
+  />
+
+  <section class="section" aria-labelledby="c-title">
+    <div class="wrap split split--top">
+      <div class="stack">
+        <h2 id="c-title">Reach us directly</h2>
+        <dl class="contact-list">
+          <div><dt>Phone and text</dt><dd><a href={brand.phoneHref}>{brand.phone}</a></dd></div>
+          <div><dt>Email</dt><dd><a href={`mailto:${brand.email}`}>{brand.email}</a></dd></div>
+          <div><dt>Hours</dt><dd>{brand.hours.text}<br />{brand.hours.closed}<br /><span class="muted" data-office-status></span></dd></div>
+          <div><dt>Service area</dt><dd>San Antonio, Texas, and <a href="/service-areas">surrounding communities</a></dd></div>
+          <div><dt>Follow us</dt><dd><a href={brand.socials.facebook} rel="noopener">Facebook</a>, <a href={brand.socials.instagram} rel="noopener">Instagram</a>, <a href={brand.socials.google} rel="noopener">Google</a></dd></div>
+        </dl>
+        <ProofLine review="kristina" />
+      </div>
+      <div class="form-card">
+        <EvaluationForm service="not-sure" />
+      </div>
+    </div>
+  </section>
+
+  <Sections sections={payment} startSoft />
+</Base>

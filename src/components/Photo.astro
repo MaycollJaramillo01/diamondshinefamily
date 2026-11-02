@@ -1,0 +1,47 @@
+---
+// One responsive picture. `ratio` is width/height; `show` is its largest width on screen in CSS px, used to size the 2x file.
+import { Picture } from 'astro:assets';
+import { img } from '../lib/images';
+
+interface Props {
+  src: string;
+  alt: string;
+  ratio?: number;
+  show?: number;
+  sizes?: string;
+  caption?: string;
+  eager?: boolean;
+  position?: string;
+  quality?: number;
+  class?: string;
+}
+
+const { src, alt, ratio, show = 640, sizes = '100vw', caption, eager = false, position = 'center', quality = 62, class: cls } = Astro.props;
+const image = img(src);
+const r = ratio ?? image.width / image.height;
+
+// Never ask for more pixels than the file holds at this crop.
+const maxW = Math.floor(Math.min(image.width, image.height * r));
+const top = Math.min(maxW, Math.min(show * 2, 2400));
+const widths = [...new Set([0.4, 0.6, 0.8, 1].map((f) => Math.round(top * f)))];
+const h = Math.round(top / r);
+---
+<figure class:list={['photo', cls]}>
+  <Picture
+    src={image}
+    alt={alt}
+    formats={['avif', 'webp']}
+    fallbackFormat="webp"
+    widths={widths}
+    sizes={sizes}
+    width={top}
+    height={h}
+    fit="cover"
+    position={position}
+    quality={quality}
+    loading={eager ? 'eager' : 'lazy'}
+    decoding={eager ? 'sync' : 'async'}
+    fetchpriority={eager ? 'high' : undefined}
+  />
+  {caption && <figcaption class="photo-note" set:html={caption} />}
+</figure>

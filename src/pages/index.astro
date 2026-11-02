@@ -1,0 +1,395 @@
+---
+import Base from '../layouts/Base.astro';
+import Photo from '../components/Photo.astro';
+import Cta from '../components/Cta.astro';
+import Facets from '../components/Facets.astro';
+import { pic } from '../data/pictures';
+import { rich } from '../lib/rich';
+import { brand, areas } from '../data/brand';
+import { serviceGroups } from '../data/nav';
+import { stories } from '../data/stories';
+import { people } from '../data/people';
+import { reviews } from '../data/reviews';
+
+// Every surface has its own method: three of them, side by side, at one size.
+const surfaces = [
+  { name: 'Stone and tile', text: 'Natural stone, tile and the grout between, each cleaned with what it can take.', pic: 'gloved-hand-stone.jpg' },
+  { name: 'Wood', text: 'Cabinetry, hardwood and fine furniture, cleaned to suit the finish.', pic: 'white-glove-detail.webp' },
+  { name: 'Walls and trim', text: 'Interior painting, cut in by hand along every line of trim.', pic: 'painting-hand.jpg' },
+];
+
+// The service card: every service by group, with a price only where the company publishes one.
+const prices: Record<string, string> = {
+  '/floor-ritual': '+$25 to $35 a visit',
+  '/white-glove-society': '$495 a year',
+};
+const menu = serviceGroups.map((g) => ({
+  ...g,
+  items: g.links.map((l) => ({ ...l, price: prices[l.href] })),
+}));
+
+// The walkthrough of a Home Evaluation, room by room.
+const rooms = [
+  { name: 'The entrance', text: 'Stone and glass at the door, the threshold, and the floor everyone walks in on.', pic: 'entry.jpeg' },
+  { name: 'The living room', text: 'Wood, stone, the fireplace and the details a room is judged by.', pic: 'limestone-fireplace.jpeg' },
+  { name: 'The kitchen', text: 'Stone counters, cabinet fronts, appliances and the grout between the tiles.', pic: 'stone-kitchen.jpg' },
+  { name: 'The floors', text: 'Tile, grout, hardwood and natural stone, each with its own method.', pic: 'travertine.jpg' },
+  { name: 'The carpeted rooms', text: 'Traffic lanes, pet areas and the rooms used most, and what can be restored.', pic: 'carpet-room.webp' },
+  { name: 'The bedrooms', text: 'Linens, beds and the rooms a guest notices first.', pic: 'bed-presentation.jpg' },
+];
+const marks = ['Maintain', 'Restore', 'Priority'];
+
+// The numbers band: counted from the service-area list, so it follows that list.
+const towns = areas.flatMap((a) => a.towns).length;
+
+const sergio = people.find((p) => p.slug === 'sergio-leal')!;
+const remark = reviews.find((r) => r.id === 'brittney')!;
+---
+<Base
+  title={`Home Preservation & Care in San Antonio, TX | ${brand.name}`}
+  description="Family-owned home preservation and care in San Antonio since 2017: specialized cleaning, surface restoration and recurring care for private residences. Request a Home Evaluation."
+  overlay
+>
+  <section class="hero" aria-labelledby="hero-name">
+    <div class="hero-media">
+      <Photo class="hero-shot" {...pic('hero-home.jpg')} show={1600} sizes="100vw" eager />
+      <Photo class="hero-shot" src="courtyard-wide.webp" alt="" show={1600} sizes="100vw" />
+      <Photo class="hero-shot" src="limestone-entrance.webp" alt="" show={1600} sizes="100vw" />
+    </div>
+    <div class="wrap hero-foot t-stagger">
+      <h1 id="hero-name" class="hero-name t-stagger-line"><span>Diamond</span> <span>Shine</span></h1>
+      <p class="hero-line t-stagger-line t-stagger-line--2">Home preservation and care for San&nbsp;Antonio’s finest homes, from the Leal family since&nbsp;2017.</p>
+      <div class="t-stagger-line t-stagger-line--3"><Cta class="btn--paper" /></div>
+    </div>
+  </section>
+
+  <section class="numbers" aria-label="Diamond Shine in numbers">
+    <dl class="wrap numbers-in">
+      <div><dt set:html={rich('Homes served [confirm:homes-8000]')} /><dd>8,000+</dd></div>
+      <div><dt>Family-owned since</dt><dd>{brand.founded}</dd></div>
+      <div><dt>Communities we serve</dt><dd>{towns}</dd></div>
+    </dl>
+  </section>
+
+  <section class="section" aria-labelledby="method-title">
+    <div class="wrap">
+      <header class="center-head">
+        <h2 id="method-title">Every surface, its own method.</h2>
+        <p class="lead">One wrong product can dull a stone floor for good. We match the method to the material and review it with you, area by area.</p>
+      </header>
+      <ul class="trio">
+        {surfaces.map((s) => (
+          <li class="surface">
+            <Photo {...pic(s.pic)} ratio={0.8} show={440} sizes="(min-width: 641px) 31vw, 100vw" />
+            <h3>{s.name}</h3>
+            <p>{s.text}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section sheet-band" aria-labelledby="care-title">
+    <div class="wrap">
+      <div class="sheet">
+        <Facets />
+        <div class="sheet-in">
+          <header class="center-head">
+            <h2 id="care-title">The care we offer</h2>
+            <p class="lead">Every service is quoted in writing before work begins.</p>
+          </header>
+          <div class="sheet-grid">
+            {menu.map((g) => (
+              <div class="sheet-group">
+                <h3><a href={g.href}>{g.name}</a></h3>
+                <p class="sheet-line">{g.line}</p>
+                <ul>
+                  {g.items.map((it) => (
+                    <li><a href={it.href}>{it.label}</a>{it.price && <span class="sheet-price"> · {it.price}</span>}</li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+          <p class="sheet-hours">{brand.hours.short} · Call or text <a href={brand.phoneHref}>{brand.phone}</a></p>
+        </div>
+        <Facets flip />
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="walk-title" data-walk>
+    <div class="wrap">
+      <header class="center-head">
+        <h2 id="walk-title">The walkthrough</h2>
+        <p class="lead">Every Home Evaluation is a walk through the house with you. Walk yours here, and mark each area the way we would.</p>
+      </header>
+      <ol class="rooms">
+        {rooms.map((r, i) => (
+          <li class="room">
+            <Photo {...pic(r.pic)} ratio={4 / 3} show={460} sizes="(min-width: 1000px) 31vw, (min-width: 641px) 47vw, 100vw" />
+            <div class="room-body">
+              <h3>{r.name}</h3>
+              <p>{r.text}</p>
+              <div class="mark" role="group" aria-label={`Mark ${r.name.toLowerCase()}`} data-room={r.name} data-index={i}>
+                {marks.map((m) => <button type="button" aria-pressed="false" data-mark={m}>{m}</button>)}
+              </div>
+            </div>
+          </li>
+        ))}
+      </ol>
+      <div class="plan">
+        <h3>Your plan</h3>
+        <p>After the walkthrough you receive a written plan in plain English, every area marked Maintain, Restore or Priority. Every service then starts with a signed agreement covering scope, price, payment terms and responsibilities.</p>
+        <ul class="plan-list" data-plan aria-live="polite"><li class="plan-empty">Mark a room above and it appears here.</li></ul>
+        <a class="btn btn--paper" data-plan-link data-cta href="/home-evaluation">{brand.cta}</a>
+        <p class="plan-note">No obligation. A request does not reserve a date or take payment.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--soft" aria-labelledby="family-title">
+    <div class="wrap">
+      <header class="center-head">
+        <h2 id="family-title">The Leal family</h2>
+        <p class="lead">Lilian and Sergio Leal founded Diamond Shine in San&nbsp;Antonio in 2017, and Emilio Leal leads it today. The family you speak with is the family accountable for the work.</p>
+      </header>
+      <ul class="trio family">
+        {people.map((p) => (
+          <li>
+            <a class="member" href={`/people/${p.slug}`}>
+              <Photo class="portrait" src={p.portrait} alt={p.alt} ratio={0.8} show={420} position="top" sizes="(min-width: 641px) 31vw, 33vw" />
+              <span class="member-name">{p.name}</span>
+              <span class="member-role">{p.role}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section voice" aria-label="Sergio Leal, in his own words">
+    <div class="wrap">
+      <figure class="voice-quote">
+        <blockquote>&ldquo;{sergio.quote}&rdquo;</blockquote>
+        <figcaption><a href={`/people/${sergio.slug}`}>{sergio.name}</a>, {sergio.role.toLowerCase()}</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="work-title">
+    <div class="wrap">
+      <header class="center-head">
+        <h2 id="work-title">Our work, in writing</h2>
+        <p class="lead">Each case record sets out the home and the plan of care, in plain words.</p>
+      </header>
+      <ul class="trio">
+        {stories.map((s) => (
+          <li>
+            <a class="story" href={`/transformation-stories/${s.slug}`}>
+              <Photo {...pic(s.pic)} ratio={0.8} show={440} sizes="(min-width: 641px) 31vw, 100vw" />
+              <span class="story-name" set:html={s.h1} />
+              <span class="story-text">{s.summary}</span>
+              <span class="story-note">Illustrative photograph</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+      <figure class="remark">
+        <blockquote>&ldquo;{remark.excerpt}&rdquo;</blockquote>
+        <figcaption>{remark.name}, {remark.source}</figcaption>
+      </figure>
+      <p class="center-actions"><a class="btn btn--line" href="/transformation-stories">Every case record</a> <a class="btn btn--line" href="/reviews">Every review, in full</a></p>
+    </div>
+  </section>
+
+  <section class="visit" aria-labelledby="visit-title">
+    <Photo class="visit-photo" {...pic('arrival-entrance.webp')} show={1600} sizes="100vw" />
+    <div class="wrap">
+      <div class="visit-card">
+        <h2 id="visit-title">Start with a walkthrough</h2>
+        <p>Homes in San&nbsp;Antonio, Alamo Heights, Terrell Hills, Olmos Park, Boerne and <a href="/service-areas">nearby communities</a>.</p>
+        <p>{brand.hours.short}<br />{brand.hours.closed}</p>
+        <p class="visit-status" data-office-status></p>
+        <p class="visit-lines"><a href={brand.phoneHref}>Call or text {brand.phone}</a><a href={`mailto:${brand.email}`}>{brand.email}</a></p>
+        <Cta />
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  // The walkthrough: the visitor's own marks, listed as a plan and carried into the request.
+  const root = document.querySelector<HTMLElement>('[data-walk]');
+  if (root) {
+    const plan = root.querySelector<HTMLElement>('[data-plan]')!;
+    const link = root.querySelector<HTMLAnchorElement>('[data-plan-link]')!;
+    const empty = plan.firstElementChild!;
+    const chosen = new Map<number, [string, string]>();
+
+    root.addEventListener('click', (event) => {
+      const button = (event.target as Element).closest<HTMLButtonElement>('[data-mark]');
+      if (!button) return;
+      const group = button.closest<HTMLElement>('[data-room]')!;
+      const on = button.getAttribute('aria-pressed') !== 'true';
+      group.querySelectorAll('[data-mark]').forEach((b) => b.setAttribute('aria-pressed', String(b === button && on)));
+      const index = Number(group.dataset.index);
+      if (on) chosen.set(index, [group.dataset.room!, button.dataset.mark!]);
+      else chosen.delete(index);
+
+      const lines = [...chosen.entries()].sort((a, b) => a[0] - b[0]).map(([, pair]) => pair);
+      plan.replaceChildren(
+        ...(lines.length
+          ? lines.map(([room, mark]) => {
+              const li = document.createElement('li');
+              const name = document.createElement('span');
+              const value = document.createElement('strong');
+              name.textContent = room;
+              value.textContent = mark;
+              li.append(name, value);
+              return li;
+            })
+          : [empty]),
+      );
+      const notes = lines.map(([room, mark]) => `${room}: ${mark}`).join('; ');
+      link.href = notes ? `/home-evaluation?notes=${encodeURIComponent(`From the walkthrough on the home page. ${notes}.`)}` : '/home-evaluation';
+    });
+  }
+</script>
+
+<style is:global>
+  /* one centred axis for the whole page: headings and leads sit on it, grids divide around it in equal parts */
+  .center-head { max-width: 760px; margin-inline: auto; text-align: center; }
+  .center-head .lead { margin-top: 20px; }
+  .center-head + * { margin-top: clamp(48px, 5vw, 72px); }
+
+  /* hero: the house, the name across it, everything on the centre line */
+  .hero { position: relative; isolation: isolate; display: grid; align-items: end; min-height: 100svh; overflow: hidden; background: var(--navy); color: var(--white); }
+  .hero-media { position: absolute; inset: 0; z-index: -2; }
+  .hero-shot { position: absolute; inset: 0; }
+  .hero-shot + .hero-shot { opacity: 0; }
+  .hero-shot picture, .hero-shot img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .hero::before { content: ''; position: absolute; inset: 0 0 auto; z-index: -1; height: 180px; background: linear-gradient(rgb(0 10 26 / 0.5), rgb(0 10 26 / 0)); } /* taste-skill-ignore: scrim over the photograph */
+  .hero::after { content: ''; position: absolute; inset: auto 0 0; z-index: -1; height: 62%; background: linear-gradient(to top, rgb(0 10 26 / 0.8), rgb(0 10 26 / 0)); } /* taste-skill-ignore: scrim over the photograph */
+  .hero-foot { container-type: inline-size; display: grid; grid-template-columns: minmax(0, 1fr); justify-items: center; gap: clamp(20px, 2.2vw, 32px); width: 100%; padding-bottom: clamp(44px, 5vw, 72px); text-align: center; }
+  .hero-name { font-size: var(--step-name); line-height: 0.8; letter-spacing: -0.035em; color: var(--white); white-space: nowrap; }
+  .hero-line { max-width: 44ch; font-size: var(--step-lead); line-height: 1.4; }
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-media { animation: hero-drift 26s ease-in-out infinite alternate; }
+    .hero-shot:nth-child(2) { animation: hero-two 18s infinite; }
+    .hero-shot:nth-child(3) { animation: hero-three 18s infinite; }
+  }
+  @keyframes hero-drift { from { transform: scale(1); } to { transform: scale(1.06); } }
+  @keyframes hero-two { 0%, 33.3% { opacity: 0; } 42.2%, 91.1% { opacity: 1; } 100% { opacity: 0; } }
+  @keyframes hero-three { 0%, 66.7% { opacity: 0; } 75.6%, 91.1% { opacity: 1; } 100% { opacity: 0; } }
+  @media (max-width: 640px) {
+    .hero-name { font-size: 21vw; line-height: 0.88; white-space: normal; }
+    .hero-name span { display: block; }
+  }
+
+  /* the numbers, large and in three equal columns, straight after the photograph */
+  .numbers { padding-block: clamp(48px, 6vw, 88px); background: var(--navy); color: var(--white); }
+  .numbers-in { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px var(--gap); text-align: center; }
+  .numbers-in > div { display: flex; flex-direction: column-reverse; gap: 12px; }
+  .numbers dd { font-family: var(--display); font-size: var(--step-head); font-weight: 500; line-height: 1; letter-spacing: -0.02em; font-variant-numeric: lining-nums; }
+  .numbers dt { color: var(--sky); letter-spacing: 0.02em; }
+  @media (max-width: 640px) { .numbers-in { grid-template-columns: 1fr; } }
+
+  /* three equal columns, the same picture size in each */
+  .trio { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(36px, 3vw, 48px) var(--gap); }
+  .trio > li { display: flex; flex-direction: column; }
+  .trio > li > a { flex: 1; }
+  .surface, .member, .story { display: flex; flex-direction: column; align-items: center; text-align: center; }
+  .surface .photo, .member .photo, .story .photo { width: 100%; }
+  .surface h3 { margin-top: 24px; }
+  .surface p { max-width: 30ch; margin-top: 10px; }
+  @media (max-width: 640px) {
+    .trio:not(.family) { grid-template-columns: 1fr; }
+    .trio:not(.family) .photo img { aspect-ratio: 3 / 2; object-fit: cover; }
+  }
+
+  /* the service card, printed on paper and cut like the diamond */
+  .sheet-band { background: var(--navy); }
+  .sheet { position: relative; background: var(--paper); }
+  .sheet > .facets { position: absolute; left: 0; right: 0; }
+  .sheet > .facets:first-child { top: -10px; }
+  .sheet > .facets:last-child { bottom: -10px; }
+  .sheet-in { padding: clamp(56px, 7vw, 104px) clamp(24px, 5vw, 80px); }
+  .sheet-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(48px, 5vw, 72px) clamp(24px, 3vw, 48px); text-align: center; }
+  .sheet-group h3 a { color: var(--navy); text-decoration: none; }
+  .sheet-group h3 a:hover { color: var(--blue); }
+  .sheet-line { max-width: 32ch; margin: 10px auto 0; font-size: var(--step-small); color: var(--muted); }
+  .sheet-group ul { display: grid; gap: 2px; margin-top: 18px; }
+  .sheet-group li a { display: inline-flex; align-items: center; min-height: 36px; color: var(--navy); text-decoration: none; }
+  .sheet-group li a:hover { color: var(--blue); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.24em; }
+  .sheet-price { font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--muted); }
+  .sheet-hours { margin-top: clamp(56px, 6vw, 80px); font-size: var(--step-small); text-align: center; color: var(--muted); }
+  @media (max-width: 999px) { .sheet-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 640px) {
+    .sheet-band .wrap { padding-inline: 10px; }
+    .sheet-grid { grid-template-columns: 1fr; }
+  }
+
+  /* the walkthrough: six equal rooms, then the visitor's plan on the centre line */
+  .rooms { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--gap); }
+  .room { display: flex; flex-direction: column; background: var(--ice); }
+  .room-body { display: flex; flex: 1; flex-direction: column; align-items: center; padding: 28px clamp(20px, 2vw, 32px) 32px; text-align: center; }
+  .room-body p { max-width: 32ch; margin-top: 10px; }
+  .mark { display: none; width: 100%; gap: 6px; margin-top: auto; padding-top: 24px; }
+  .js .mark { display: flex; }
+  .mark button { flex: 1; min-height: 44px; padding: 6px 4px; background: var(--paper); color: var(--navy); border: 0; font: inherit; font-size: var(--step-small); font-weight: 500; letter-spacing: 0.02em; cursor: pointer; transition: background-color var(--duration-quick) ease-out, color var(--duration-quick) ease-out, transform var(--duration-quick) ease-out; }
+  .mark button:hover { background: var(--ice-2); }
+  .mark button:active { transform: scale(0.96); }
+  .mark button[aria-pressed='true'] { background: var(--navy); color: var(--white); }
+  .plan { display: grid; justify-items: center; max-width: 760px; margin: clamp(48px, 5vw, 72px) auto 0; padding: clamp(40px, 5vw, 64px) clamp(24px, 5vw, 64px); background: var(--navy); color: var(--white); text-align: center; }
+  .plan h3 { color: var(--white); }
+  .plan > p { max-width: 52ch; margin-top: 14px; }
+  .plan-list { display: grid; gap: 6px; width: min(440px, 100%); margin-top: 28px; }
+  .plan-list li { display: flex; justify-content: space-between; gap: 12px; padding: 10px 16px; background: var(--navy-2); text-align: left; }
+  .plan-list .plan-empty { display: none; justify-content: center; background: none; text-align: center; }
+  .js .plan-list .plan-empty { display: flex; }
+  .plan .btn { margin-top: 28px; }
+  .plan .plan-note { margin-top: 16px; font-size: var(--step-small); }
+  @media (max-width: 999px) { .rooms { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 640px) { .rooms { grid-template-columns: 1fr; } }
+
+  /* the family: three portraits at one size */
+  .member { color: var(--navy); text-decoration: none; }
+  .member-name { margin-top: 20px; font-family: var(--display); font-size: var(--step-lead); line-height: 1.2; transition: color var(--duration-quick) ease-out; }
+  .member-role { margin-top: 4px; font-size: var(--step-small); color: var(--muted); }
+  .member:hover .member-name { color: var(--blue); }
+  @media (max-width: 640px) {
+    .family { gap: 12px; }
+    .member-name { margin-top: 12px; font-size: 1.0625rem; }
+  }
+
+  /* one voice, centred on the navy */
+  .voice { background: var(--navy); color: var(--white); }
+  .voice-quote { margin-inline: auto; text-align: center; }
+  .voice-quote blockquote { max-width: 30ch; margin-inline: auto; font-family: var(--display); font-size: clamp(1.5rem, 1.1rem + 1.2vw, 2.25rem); line-height: 1.25; color: var(--white); }
+  .voice-quote figcaption { margin-top: 28px; }
+  .voice-quote figcaption a { color: var(--white); }
+
+  /* the work: three records at one size */
+  .story { color: var(--navy); text-decoration: none; }
+  .story .photo img { transition: transform 700ms var(--ease-smooth-out); }
+  .story:hover .photo img { transform: scale(1.03); }
+  .story-name { margin-top: 24px; font-family: var(--display); font-size: var(--step-lead); line-height: 1.2; transition: color var(--duration-quick) ease-out; }
+  .story:hover .story-name { color: var(--blue); }
+  .story-text { max-width: 34ch; margin-top: 10px; }
+  .story-note { margin-top: auto; padding-top: 12px; font-size: var(--step-small); color: var(--muted); }
+  .remark { max-width: 36ch; margin: clamp(64px, 7vw, 104px) auto 0; text-align: center; }
+  .remark blockquote { font-family: var(--display); font-size: var(--step-lead); line-height: 1.3; color: var(--navy); }
+  .remark figcaption { margin-top: 14px; font-size: var(--step-small); color: var(--muted); }
+  .center-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 40px; }
+
+  /* the visit card, centred on the photograph of an arrival */
+  .visit { position: relative; isolation: isolate; padding-block: clamp(96px, 12vw, 176px); }
+  .visit-photo { position: absolute; inset: 0; z-index: -1; }
+  .visit-photo picture, .visit-photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .visit-card { display: grid; justify-items: center; gap: 16px; max-width: 600px; margin-inline: auto; padding: clamp(40px, 5vw, 64px) clamp(24px, 4vw, 56px); background: var(--paper); text-align: center; }
+  .visit-status { font-weight: 500; color: var(--blue); }
+  .visit-status:empty { display: none; }
+  .visit-lines { display: grid; gap: 4px; }
+  .visit-card .btn { margin-top: 8px; }
+</style>

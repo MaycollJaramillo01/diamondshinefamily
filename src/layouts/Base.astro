@@ -1,0 +1,99 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { brand, areas } from '../data/brand';
+
+interface Props {
+  title: string;
+  description: string;
+  og?: string;
+  service?: string;
+  ctaHref?: string;
+  schema?: object[];
+  overlay?: boolean;
+}
+const { title, description, og = '/og/home.jpg', service, ctaHref, schema = [], overlay = false } = Astro.props;
+
+const path = Astro.url.pathname.replace(/\.html$/, '').replace(/\/index$/, '') || '/';
+const canonical = new URL(path, Astro.site).href;
+const ogUrl = new URL(og, Astro.site).href;
+
+const business = {
+  '@context': 'https://schema.org',
+  '@type': 'LocalBusiness',
+  '@id': new URL('/#business', Astro.site).href,
+  name: brand.name,
+  alternateName: brand.workingName,
+  legalName: brand.legalEntity,
+  description: `Family-owned ${brand.descriptor.toLowerCase()} in ${brand.city}, Texas: specialized cleaning, restoration and recurring care.`,
+  url: new URL('/', Astro.site).href,
+  image: ogUrl,
+  logo: new URL('/brand/logo-full.webp', Astro.site).href,
+  telephone: `+1-${brand.phone}`,
+  email: brand.email,
+  foundingDate: brand.founded,
+  founder: [
+    { '@type': 'Person', name: 'Lilian Leal' },
+    { '@type': 'Person', name: 'Sergio Leal' },
+  ],
+  areaServed: areas.flatMap((a) => a.towns).map((name) => ({ '@type': 'City', name: `${name}, TX` })),
+  openingHoursSpecification: [
+    {
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+      opens: '08:30',
+      closes: '18:00',
+    },
+  ],
+  sameAs: [brand.socials.facebook, brand.socials.instagram],
+};
+---
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="preload" href="/fonts/bodoni-moda-latin-wght.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/jost-latin-wght.woff2" as="font" type="font/woff2" crossorigin />
+    <meta name="theme-color" content="#001838" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={brand.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script is:inline>
+      // The form's second step only hides when scripts run. If the site script never arrives, everything shows again.
+      document.documentElement.classList.add('js');
+      addEventListener('load', function () {
+        setTimeout(function () {
+          if (!window.dsReady) document.documentElement.classList.remove('js');
+        }, 2500);
+      });
+    </script>
+    <script type="application/ld+json" set:html={JSON.stringify(business)} />
+    {schema.map((s) => <script type="application/ld+json" set:html={JSON.stringify(s)} />)}
+    <slot name="head" />
+  </head>
+  <body>
+    <Header service={service} ctaHref={ctaHref} overlay={overlay} />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <Footer />
+    <script>
+      import '../scripts/site';
+    </script>
+  </body>
+</html>

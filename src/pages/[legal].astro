@@ -1,0 +1,27 @@
+---
+// Privacy, terms and the service disclaimer, kept in the company's own wording.
+import { getCollection, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+
+export async function getStaticPaths() {
+  const pages = await getCollection('legal');
+  return pages.map((entry) => ({ params: { legal: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+---
+<Base title={`${entry.data.title} | Diamond Shine, San Antonio`} description={entry.data.description}>
+  <article>
+    <header class="page-hero">
+      <div class="wrap narrow stack">
+        <h1>{entry.data.title}</h1>
+        {entry.data.lead && <p class="lead">{entry.data.lead}</p>}
+        {entry.data.updated && <p class="small muted">Last updated: {entry.data.updated}</p>}
+      </div>
+    </header>
+    <div class="section">
+      <div class="wrap narrow"><div class="prose"><Content /></div></div>
+    </div>
+  </article>
+</Base>

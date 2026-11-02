@@ -1,0 +1,57 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import Sections from '../../components/Sections.astro';
+import Frames from '../../components/Frames.astro';
+import Related from '../../components/Related.astro';
+import Close from '../../components/Close.astro';
+import { illustrativeNote } from '../../data/pictures';
+import { stories } from '../../data/stories';
+import type { Story } from '../../data/stories';
+import type { Section } from '../../data/page-types';
+
+export function getStaticPaths() {
+  return stories.map((story) => ({ params: { story: story.slug }, props: { story } }));
+}
+
+const { story } = Astro.props as { story: Story };
+
+// The six parts every case follows: situation, goal, findings, scope, work, result.
+const before: Section[] = [
+  { kind: 'plate', title: 'The situation and the goal', text: story.situation, note: story.goal, pic: story.scopePic, flip: true },
+  { kind: 'columns', title: 'What we found, what was approved', text: story.meta.join(', ') + '.', columns: [{ name: 'What we found', items: story.found }, { name: 'The approved scope', items: story.scope }] },
+  { kind: 'steps', title: 'The work', steps: story.work.map((w, i) => ({ name: i === 0 ? 'First' : i === story.work.length - 1 ? 'Finally' : ['Then', 'Next', 'After that'][i - 1], text: w })) },
+  { kind: 'limits', title: 'Result and handoff', items: story.result, note: 'This case describes only the cleaning, restoration, preservation and presentation services performed by Diamond Shine. It is not a home inspection, appraisal, engineering opinion or real-estate valuation, and it makes no claim about sale price, timing or inspection outcomes.' },
+];
+const after: Section[] = [
+  {
+    kind: 'columns',
+    title: 'Documents and continued care',
+    columns: [
+      { name: 'Documentation', items: [...story.documents, '[About property documentation](/documentation)'] },
+      { name: 'Care recommendations', items: [...story.care, '[Ongoing care](/home-preservation)'] },
+    ],
+  },
+];
+---
+<Base title={story.seoTitle} description={story.description} service={story.service}>
+  <PageHero
+    h1={story.h1}
+    lead={story.lead}
+    main={story.pic}
+    caption={illustrativeNote}
+    crumb={[{ label: 'Our work', href: '/transformation-stories' }]}
+    service={story.service}
+    review="crystal"
+  />
+  <Sections sections={before} caption={illustrativeNote} />
+  <Frames groups={story.frames} />
+  <Sections sections={after} startSoft />
+  <Related items={story.related} soft={false} />
+  <Close
+    title="Prepare your next&nbsp;chapter"
+    text="Request an evaluation and receive an honest recommendation for your home."
+    picture="limestone-entrance.webp"
+    service={story.service}
+  />
+</Base>

@@ -1,0 +1,62 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import Close from '../components/Close.astro';
+import { rich } from '../lib/rich';
+import { brand } from '../data/brand';
+import { reviews } from '../data/reviews';
+
+const groups = [
+  { id: 'homes', title: 'In the home' },
+  { id: 'moves', title: 'Around a move' },
+  { id: 'recurring', title: 'Over the years' },
+  { id: 'commercial', title: 'At work' },
+];
+---
+<Base
+  title="Client Reviews of Home Cleaning in San Antonio | Diamond Shine"
+  description="Reviews of Diamond Shine in full, in clients’ own words, with the difference between a Facebook recommendation and a Google review kept visible. No ratings added."
+  service="not-sure"
+>
+  <PageHero
+    h1="San Antonio clients, in their own&nbsp;words."
+    lead="Every review below is printed in full as it was published, with its source beside it. We add no ratings and change no words. [confirm:review-permission]"
+    main="hero-home.jpg"
+    service="not-sure"
+    review="evelyn"
+  />
+
+  {groups.map((g, i) => (
+    <section class:list={['section', { 'section--soft': i % 2 === 1 }]} aria-labelledby={`r-${g.id}`}>
+      <div class="wrap">
+        <div class="section-head"><h2 id={`r-${g.id}`}>{g.title}</h2></div>
+        <div class="review-grid">
+          {reviews.filter((r) => r.group === g.id).map((r) => (
+            <figure class="quote">
+              <blockquote>&ldquo;{r.text}&rdquo;</blockquote>
+              <figcaption><strong>{r.name}</strong><br />{r.source}. {r.context}.</figcaption>
+            </figure>
+          ))}
+        </div>
+      </div>
+    </section>
+  ))}
+
+  <section class="section" aria-labelledby="r-public-title">
+    <div class="wrap stack">
+      <h2 id="r-public-title">Read them where they were written</h2>
+      <ul class="contact-lines">
+        <li><a href={brand.socials.facebook} rel="noopener">Facebook recommendations</a></li>
+        <li><a href={brand.socials.google} rel="noopener">Google reviews</a></li>
+      </ul>
+      <p set:html={rich(`Been served by Diamond Shine? We would be glad to hear how it went, on either page or at [${brand.email}](mailto:${brand.email}).`)} />
+    </div>
+  </section>
+
+  <Close
+    title="Decide for yourself"
+    text="An evaluation shows you how we look at a home, and what we would and would not recommend."
+    service="not-sure"
+    review="rob"
+  />
+</Base>

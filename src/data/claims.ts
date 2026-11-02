@@ -1,0 +1,31 @@
+// Everything published that the company has not yet verified. A data string carries [confirm:key], and rich()
+// prints a visible "To confirm" mark beside it. Set a claim to 'verified' and its mark disappears everywhere.
+// An unknown key fails the build, so a mark can never point at nothing.
+export const claims: Record<string, 'pending' | 'verified'> = {
+  'homes-8000': 'pending',
+  insured: 'pending',
+  bonded: 'pending',
+  background: 'pending',
+  satisfaction: 'pending',
+  nontoxic: 'pending',
+  'make-it-right': 'pending',
+  complimentary: 'pending',
+  prices: 'pending',
+  'response-time': 'pending',
+  turnaround: 'pending',
+  'most-popular': 'pending',
+  communities: 'pending',
+  'boerne-case': 'pending',
+  'converse-status': 'pending',
+  'ladera-status': 'pending',
+  portraits: 'pending',
+  'review-permission': 'pending',
+  square: 'pending',
+  society: 'pending',
+  circle: 'pending',
+  academy: 'pending',
+  gift: 'pending',
+  certification: 'pending',
+  hiring: 'pending',
+  'good-samaritan': 'pending',
+};

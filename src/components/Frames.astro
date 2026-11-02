@@ -1,0 +1,28 @@
+---
+// Frames left honestly empty: the photograph waits for the client's written approval.
+interface Props {
+  groups: { name: string; line: string; frames: string[] }[];
+}
+const { groups } = Astro.props;
+---
+<section class="section" aria-labelledby="frames-title">
+  <div class="wrap">
+    <div class="section-head">
+      <h2 id="frames-title">Project documentation</h2>
+      <p>We document each approved area before work begins, after it is completed and at property handoff. Photography is published only with client approval, so these frames stay empty until that is on file.</p>
+    </div>
+    {groups.map((g) => (
+      <div class="frames-group">
+        <h3>{g.name}</h3>
+        <p class="muted">{g.line}</p>
+        <div class="frames">
+          {g.frames.map((f) => (
+            <div class="frame-empty">
+              <p><strong>{f}</strong><br /><span class="small muted">Photo pending client approval</span></p>
+            </div>
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
